@@ -7,13 +7,17 @@ import org.slf4j.LoggerFactory;
 public class Launcher {
 
     public static void main(String[] args) {
+        // setup the logging config
         System.setProperty(ContextInitializer.CONFIG_FILE_PROPERTY, "config/log.cfg.xml");
 
         Logger logger = LoggerFactory.getLogger(Launcher.class);
 
-        System.out.println("RoguelikeDev Does the Complete Roguelike Tutorial");
-
         logger.info("RoguelikeDev Does the Complete Roguelike Tutorial");
+        logger.info("Creating and starting main game class...");
+
+        new Game().start();
+
+        logger.info("Done launching game class");
 
     }
 }
