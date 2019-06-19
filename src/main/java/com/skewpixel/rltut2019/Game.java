@@ -1,6 +1,8 @@
 package com.skewpixel.rltut2019;
 
+import com.skewpixel.rltut2019.ui.ConsolePanel;
 import com.skewpixel.rltut2019.ui.GameWindow;
+import com.skewpixel.rltut2019.ui.RenderBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,12 +12,17 @@ public class Game implements Runnable {
     private final GameWindow gameWindow;
     private Thread gameThread;
     private volatile boolean running = false;
+    private ConsolePanel consolePanel;
 
+    RenderBuffer renderBuffer;
 
     public Game() {
         logger.info("Creating game window");
         gameWindow = new GameWindow("rlTut", 600, 400);
-
+        consolePanel = new ConsolePanel(600, 400);
+        renderBuffer = new RenderBuffer(600, 400);
+        gameWindow.add(this.consolePanel);
+        gameWindow.pack();
     }
 
     public synchronized void start() {
@@ -45,9 +52,8 @@ public class Game implements Runnable {
 
     @Override
     public void run() {
-
         while(running) {
-
+            consolePanel.render(renderBuffer);
         }
     }
 }
