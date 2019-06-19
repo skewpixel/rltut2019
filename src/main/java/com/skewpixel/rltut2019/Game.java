@@ -1,5 +1,6 @@
 package com.skewpixel.rltut2019;
 
+import com.skewpixel.rltut2019.renderer.GameRenderer;
 import com.skewpixel.rltut2019.ui.ConsolePanel;
 import com.skewpixel.rltut2019.ui.GameWindow;
 import com.skewpixel.rltut2019.ui.RenderBuffer;
@@ -15,6 +16,7 @@ public class Game implements Runnable {
     private ConsolePanel consolePanel;
 
     RenderBuffer renderBuffer;
+    private final GameRenderer renderer;
 
     public Game() {
         logger.info("Creating game window");
@@ -23,6 +25,8 @@ public class Game implements Runnable {
         renderBuffer = new RenderBuffer(600, 400);
         gameWindow.add(this.consolePanel);
         gameWindow.pack();
+
+        this.renderer = new GameRenderer(renderBuffer);
     }
 
     public synchronized void start() {
@@ -53,6 +57,7 @@ public class Game implements Runnable {
     @Override
     public void run() {
         while(running) {
+            renderer.render();
             consolePanel.render(renderBuffer);
         }
     }

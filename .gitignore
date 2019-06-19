@@ -12,6 +12,8 @@
 
 # intellij
 .idea/
+target/
+
 
 # Package Files #
 *.jar
