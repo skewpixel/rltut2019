@@ -16,11 +16,20 @@ public class SpriteSheetFont extends SpriteSheet {
     public void drawString(RenderBuffer destBuf, String str, int x, int y, int color, int bgColor) {
 
         for(int i = 0; i < str.length(); i++) {
-            int c = (int)str.charAt(i);
-            int cy = c / numCols;
-            int cx = c % numCols;
-
-            drawToBuffer(destBuf, cx, cy, (i * spriteWidth) + x, y, transparentColor, color, bgColor);
+            char c = str.charAt(i);
+            drawChar(destBuf, c, (i * spriteWidth) + x, y, color, bgColor);
         }
+    }
+
+    public void drawChar(RenderBuffer destBuf, char c, int x, int y, int color) {
+        drawChar(destBuf, c, x, y, color, -1);
+    }
+
+    public void drawChar(RenderBuffer destBuf, char c, int x, int y, int color, int bgColor) {
+        int val = (int)c;
+        int cy = val / numCols;
+        int cx = val % numCols;
+
+        drawToBuffer(destBuf, cx, cy, x, y, transparentColor, color, bgColor);
     }
 }
