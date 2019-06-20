@@ -2,19 +2,17 @@ package com.skewpixel.rltut2019.renderer;
 
 import com.skewpixel.rltut2019.map.Tile;
 import com.skewpixel.rltut2019.map.World;
-import com.skewpixel.rltut2019.ui.RenderBuffer;
-import com.skewpixel.rltut2019.ui.SpriteSheetFont;
-import com.skewpixel.rltut2019.ui.Textures;
+import com.skewpixel.rltut2019.ui.Terminal;
+
+import java.awt.*;
 
 public class GameRenderer {
-    private final RenderBuffer renderBuffer;
-    private final SpriteSheetFont spriteSheetFont;
+    private final Terminal terminal;
     private final World world;
 
-    public GameRenderer(RenderBuffer renderBuffer, World world) {
-        this.renderBuffer = renderBuffer;
+    public GameRenderer(Terminal terminal, World world) {
+        this.terminal = terminal;
         this.world = world;
-        this.spriteSheetFont = new SpriteSheetFont(9, 16, Textures.font, 0xFF00FF);
     }
 
     public void render() {
@@ -23,18 +21,10 @@ public class GameRenderer {
             for(int y = 0; y < world.getHeight(); y++) {
                 Tile t = world.getTileAt(x, y);
 
-                spriteSheetFont.drawChar(renderBuffer, t.getGlyph(), getScreenX(x), getScreenY(y), t.getColour());
+                terminal.write(t.getGlyph(), x, y, t.getColour());
             }
         }
 
-        spriteSheetFont.drawChar(renderBuffer, '@', getScreenX(40), getScreenY(10), 0xFFFF0000);
-    }
-
-    private int getScreenX(int worldX) {
-        return worldX * spriteSheetFont.getSpriteWidth();
-    }
-
-    private int getScreenY(int worldY) {
-        return worldY * spriteSheetFont.getSpriteHeight();
+        terminal.write('@', terminal.getCols()/2, terminal.getRows()/2, Color.red);
     }
 }

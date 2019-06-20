@@ -2,38 +2,40 @@ package com.skewpixel.rltut2019;
 
 import com.skewpixel.rltut2019.map.World;
 import com.skewpixel.rltut2019.renderer.GameRenderer;
-import com.skewpixel.rltut2019.ui.RenderCanvas;
-import com.skewpixel.rltut2019.ui.GameWindow;
-import com.skewpixel.rltut2019.ui.RenderBuffer;
+import com.skewpixel.rltut2019.ui.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Game implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(Game.class);
 
-    private static final int ScreenWidth = 80*9;
-    private static final int ScreenHeight = 21*16;
+    private static final int ScreenCols = 80;
+    private static final int ScreenRows = 21;
+    private Terminal terminal;
 
-    private final GameWindow gameWindow;
+    private static final int WorldWidth = 90;
+    private static final int WorldHeight = 31;
+    private final World world;
+
     private Thread gameThread;
     private volatile boolean running = false;
-    private RenderCanvas consolePanel;
 
-    RenderBuffer renderBuffer;
+    private final GameWindow gameWindow;
+    private RenderCanvas renderCanvas;
+
     private final GameRenderer renderer;
-
-    World world;
 
     public Game() {
         logger.info("Creating game window");
-        gameWindow = new GameWindow("rlTut", ScreenWidth, ScreenHeight);
-        consolePanel = new RenderCanvas(ScreenWidth, ScreenHeight);
-        renderBuffer = new RenderBuffer(ScreenWidth, ScreenHeight);
-        gameWindow.add(this.consolePanel);
+        terminal = new Terminal(new SpriteSheet(9, 16, Textures.font, Colors.Fuchsia), ScreenCols, ScreenRows);
+        gameWindow = new GameWindow("rlTut", terminal.getWidth(), terminal.getHeight());
+        renderCanvas = new RenderCanvas(terminal.getWidth(), terminal.getHeight());
+
+        gameWindow.add(this.renderCanvas);
         gameWindow.pack();
 
-        world = new World(90, 31);
-        this.renderer = new GameRenderer(renderBuffer, world);
+        world = new World(WorldWidth, WorldHeight);
+        renderer = new GameRenderer(terminal, world);
     }
 
     public synchronized void start() {
@@ -65,7 +67,7 @@ public class Game implements Runnable {
     public void run() {
         while(running) {
             renderer.render();
-            consolePanel.render(renderBuffer);
+            renderCanvas.render(terminal.getRenderBuffer());
         }
     }
 }

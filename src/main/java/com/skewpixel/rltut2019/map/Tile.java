@@ -1,26 +1,27 @@
 package com.skewpixel.rltut2019.map;
 
-import com.skewpixel.rltut2019.ui.Colours;
+
+import java.awt.*;
 
 public enum Tile {
-    Floor((char)250, Colours.BrightWhite),
-    Walls((char)177, Colours.BrightYellow),
-    Bounds('x', Colours.BrightBlack);
+    Floor((char)250, Color.white),
+    Walls((char)177, Color.yellow),
+    Bounds('x', Color.black);
 
 
-    Tile(char glyph, int colour) {
+    Tile(char glyph, Color colour) {
         this.glyph = glyph;
         this.colour = colour;
     }
 
     private char glyph;
-    private int colour;
+    private Color colour;
 
     public char getGlyph() {
         return glyph;
     }
 
-    public int getColour() {
+    public Color getColour() {
         return colour;
     }
 }

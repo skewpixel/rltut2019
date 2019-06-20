@@ -1,5 +1,7 @@
 package com.skewpixel.rltut2019.ui;
 
+import java.awt.*;
+
 public class RenderBuffer {
     private final int width;
     private final int height;
@@ -10,10 +12,6 @@ public class RenderBuffer {
         this.height = height;
 
         this.pixels = new int[width * height];
-
-        for(int i = 0; i < width*height; i++) {
-            pixels[i] = 0;
-        }
     }
 
     public int getWidth() {
@@ -28,16 +26,22 @@ public class RenderBuffer {
         return pixels;
     }
 
-    public void draw(RenderBuffer src, int xOfs, int yOfs) {
-        draw(src, xOfs, yOfs, 0, 0xFFFFFFFF);
+    public void fill(Color color) {
+        for(int i = 0; i < width*height; i++) {
+            pixels[i] = color.getRGB();
+        }
     }
 
-    public void draw(RenderBuffer src, int xOfs, int yOfs, int transparentCol, int col) {
-        draw(src, 0, 0, src.getWidth(), src.getHeight(), xOfs, yOfs, transparentCol, col, -1);
+    public void draw(RenderBuffer src, int xOfs, int yOfs) {
+        draw(src, xOfs, yOfs, Color.black, Color.white);
+    }
+
+    public void draw(RenderBuffer src, int xOfs, int yOfs, Color transparentCol, Color col) {
+        draw(src, 0, 0, src.getWidth(), src.getHeight(), xOfs, yOfs, transparentCol, col, null);
     }
 
     public void draw(RenderBuffer src, int startX, int startY, int drawWidth, int drawHeight, int xOffset,
-                     int yOffset, int transparentCol, int color, int bgColor) {
+                     int yOffset, Color transparentCol, Color color, Color bgColor) {
 
         for(int y = 0; y< drawHeight; y++) {
             int yp = y + yOffset;
@@ -53,12 +57,13 @@ public class RenderBuffer {
                 int dest = pixels[xp + yp * width];
 
                 // remove the alpha channel and check it against the transparent colour
-                if((srcPxl & 0x00FFFFFF) != transparentCol)
+                //if((srcPxl & 0x00FFFFFF) != transparentCol.getRGB())
+                if(srcPxl  != transparentCol.getRGB())
                 {
-                    pixels[xp + yp * width] = alpha_blend(srcPxl & color, dest);
+                    pixels[xp + yp * width] = alpha_blend(srcPxl & color.getRGB(), dest);
                 }
-                else if(bgColor != -1) {
-                    pixels[xp + yp * width] = alpha_blend(bgColor, dest);
+                else if(bgColor != null) {
+                    pixels[xp + yp * width] = alpha_blend(bgColor.getRGB(), dest);
                 }
             }
         }

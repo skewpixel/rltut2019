@@ -1,9 +1,12 @@
 package com.skewpixel.rltut2019.ui;
 
+import java.awt.*;
+
 public class SpriteSheet {
 
     protected final int spriteWidth;
     protected final int spriteHeight;
+    private final Color transparentCol;
     private final RenderBuffer spriteSheetBuf;
 
     protected final int numCols;
@@ -17,22 +20,21 @@ public class SpriteSheet {
         return spriteHeight;
     }
 
-    public SpriteSheet(int spriteWidth, int spriteHeight, RenderBuffer spriteSheetBuf) {
+    public SpriteSheet(int spriteWidth, int spriteHeight, RenderBuffer spriteSheetBuf, Color transparentCol) {
         this.spriteWidth = spriteWidth;
         this.spriteHeight = spriteHeight;
         this.spriteSheetBuf = spriteSheetBuf;
+        this.transparentCol = transparentCol;
 
         this.numCols = spriteSheetBuf.getWidth() / spriteWidth;
         this.numRows = spriteSheetBuf.getHeight() / spriteHeight;
     }
 
-    public void drawToBuffer(RenderBuffer destBuf, int spriteX, int spriteY, int xOffset, int yOffset,
-                             int transparentCol, int color) {
-        drawToBuffer(destBuf, spriteX, spriteY, xOffset, yOffset, transparentCol, color, -1);
+    public void drawToBuffer(RenderBuffer destBuf, int spriteX, int spriteY, int xOffset, int yOffset, Color color) {
+        drawToBuffer(destBuf, spriteX, spriteY, xOffset, yOffset, color, null);
     }
 
-    public void drawToBuffer(RenderBuffer destBuf, int spriteX, int spriteY, int xOffset, int yOffset,
-                             int transparentCol, int color, int bgColor) {
+    public void drawToBuffer(RenderBuffer destBuf, int spriteX, int spriteY, int xOffset, int yOffset, Color color, Color bgColor) {
         int startX = spriteX * spriteWidth;
         int startY = spriteY * spriteHeight;
 
