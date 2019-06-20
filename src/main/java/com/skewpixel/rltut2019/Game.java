@@ -2,7 +2,7 @@ package com.skewpixel.rltut2019;
 
 import com.skewpixel.rltut2019.map.World;
 import com.skewpixel.rltut2019.renderer.GameRenderer;
-import com.skewpixel.rltut2019.ui.ConsolePanel;
+import com.skewpixel.rltut2019.ui.RenderCanvas;
 import com.skewpixel.rltut2019.ui.GameWindow;
 import com.skewpixel.rltut2019.ui.RenderBuffer;
 import org.slf4j.Logger;
@@ -17,7 +17,7 @@ public class Game implements Runnable {
     private final GameWindow gameWindow;
     private Thread gameThread;
     private volatile boolean running = false;
-    private ConsolePanel consolePanel;
+    private RenderCanvas consolePanel;
 
     RenderBuffer renderBuffer;
     private final GameRenderer renderer;
@@ -27,7 +27,7 @@ public class Game implements Runnable {
     public Game() {
         logger.info("Creating game window");
         gameWindow = new GameWindow("rlTut", ScreenWidth, ScreenHeight);
-        consolePanel = new ConsolePanel(ScreenWidth, ScreenHeight);
+        consolePanel = new RenderCanvas(ScreenWidth, ScreenHeight);
         renderBuffer = new RenderBuffer(ScreenWidth, ScreenHeight);
         gameWindow.add(this.consolePanel);
         gameWindow.pack();

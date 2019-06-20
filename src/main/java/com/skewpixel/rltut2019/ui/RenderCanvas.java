@@ -5,7 +5,7 @@ import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 
-public class ConsolePanel extends Canvas {
+public class RenderCanvas extends Canvas {
 
     private int width;
     private int height;
@@ -15,11 +15,11 @@ public class ConsolePanel extends Canvas {
     private BufferedImage img;
     private int[] pixels;
 
-    public ConsolePanel(int width, int height) {
+    public RenderCanvas(int width, int height) {
         this(width, height, 1);
     }
 
-    public ConsolePanel(int width, int height, int scale) {
+    public RenderCanvas(int width, int height, int scale) {
         this.width = width;
         this.height = height;
         this.scale = scale;
