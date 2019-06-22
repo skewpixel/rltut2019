@@ -7,7 +7,7 @@ public class Terminal {
     private final SpriteSheet fontSpriteSheet;
     private final RenderBuffer renderBuffer;
     private Color foregroundColor = Color.white;
-    private Color backgroundColor = null;
+    private Color backgroundColor = Color.black;
 
     private final int cols;
     private final int rows;
@@ -37,7 +37,11 @@ public class Terminal {
     }
 
     public void clear() {
-        backgroundColor.getRGB();
+        clear(backgroundColor);
+    }
+
+    public void clear(Color color) {
+        renderBuffer.fill(color);
     }
 
     public Color getForegroundColor() {

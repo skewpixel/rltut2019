@@ -100,6 +100,9 @@ public class Game implements Runnable, KeyListener {
             createGameWindow(!gameWindow.isFullscreen());
             gameWindow.setVisible(true);
         }
+        else {
+            renderer.keyPressed(e);
+        }
     }
 
     @Override
