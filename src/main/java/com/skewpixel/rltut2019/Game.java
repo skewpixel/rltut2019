@@ -6,7 +6,10 @@ import com.skewpixel.rltut2019.ui.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Game implements Runnable {
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+
+public class Game implements Runnable, KeyListener {
     private static final Logger logger = LoggerFactory.getLogger(Game.class);
 
     private static final int ScreenCols = 80;
@@ -20,7 +23,7 @@ public class Game implements Runnable {
     private Thread gameThread;
     private volatile boolean running = false;
 
-    private final GameWindow gameWindow;
+    private GameWindow gameWindow;
     private RenderCanvas renderCanvas;
 
     private final GameRenderer renderer;
@@ -28,14 +31,27 @@ public class Game implements Runnable {
     public Game() {
         logger.info("Creating game window");
         terminal = new Terminal(new SpriteSheet(9, 16, Textures.font, Colors.Fuchsia), ScreenCols, ScreenRows);
-        gameWindow = new GameWindow("rlTut", terminal.getWidth(), terminal.getHeight());
-        renderCanvas = new RenderCanvas(terminal.getWidth(), terminal.getHeight());
 
-        gameWindow.add(this.renderCanvas);
-        gameWindow.pack();
+        renderCanvas = new RenderCanvas(terminal.getWidth(), terminal.getHeight());
+        createGameWindow(false);
 
         world = new World(WorldWidth, WorldHeight);
         renderer = new GameRenderer(terminal, world);
+    }
+
+    private void createGameWindow(boolean fullscreen) {
+        if(gameWindow != null) {
+            gameWindow.setVisible(false);
+            gameWindow.dispose();
+            gameWindow = null;
+        }
+
+        gameWindow = new GameWindow("rlTut", terminal.getWidth(), terminal.getHeight());
+        gameWindow.setFullscreen(fullscreen);
+
+        gameWindow.addKeyListener(this);
+        gameWindow.add(this.renderCanvas);
+        gameWindow.pack();
     }
 
     public synchronized void start() {
@@ -69,5 +85,26 @@ public class Game implements Runnable {
             renderer.render();
             renderCanvas.render(terminal.getRenderBuffer());
         }
+
+        logger.info("Game thread stopped");
+        gameWindow.close();
     }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+
+        if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            stop();
+        }
+        else if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+            createGameWindow(!gameWindow.isFullscreen());
+            gameWindow.setVisible(true);
+        }
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) { }
+
+    @Override
+    public void keyReleased(KeyEvent e) { }
 }
