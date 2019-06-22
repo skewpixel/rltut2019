@@ -16,7 +16,8 @@ public class Terminal {
         this.fontSpriteSheet = fontSpriteSheet;
         this.cols = cols;
         this.rows = rows;
-        this.renderBuffer = new RenderBuffer(cols * this.fontSpriteSheet.getSpriteWidth(), rows * this.fontSpriteSheet.spriteHeight);
+        this.renderBuffer = new RenderBuffer(cols * this.fontSpriteSheet.getSpriteWidth(),
+                                             rows * this.fontSpriteSheet.getSpriteHeight());
 
     }
 

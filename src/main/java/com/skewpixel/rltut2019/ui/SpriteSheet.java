@@ -4,8 +4,8 @@ import java.awt.*;
 
 public class SpriteSheet {
 
-    protected final int spriteWidth;
-    protected final int spriteHeight;
+    private final int spriteWidth;
+    private final int spriteHeight;
     private final Color transparentColor;
     private final RenderBuffer spriteSheetBuf;
 
