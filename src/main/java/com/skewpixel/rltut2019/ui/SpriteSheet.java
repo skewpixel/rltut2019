@@ -6,7 +6,7 @@ public class SpriteSheet {
 
     protected final int spriteWidth;
     protected final int spriteHeight;
-    private final Color transparentCol;
+    private final Color transparentColor;
     private final RenderBuffer spriteSheetBuf;
 
     protected final int numCols;
@@ -20,11 +20,11 @@ public class SpriteSheet {
         return spriteHeight;
     }
 
-    public SpriteSheet(int spriteWidth, int spriteHeight, RenderBuffer spriteSheetBuf, Color transparentCol) {
+    public SpriteSheet(int spriteWidth, int spriteHeight, RenderBuffer spriteSheetBuf, Color transparentColor) {
         this.spriteWidth = spriteWidth;
         this.spriteHeight = spriteHeight;
         this.spriteSheetBuf = spriteSheetBuf;
-        this.transparentCol = transparentCol;
+        this.transparentColor = transparentColor;
 
         this.numCols = spriteSheetBuf.getWidth() / spriteWidth;
         this.numRows = spriteSheetBuf.getHeight() / spriteHeight;
@@ -52,6 +52,6 @@ public class SpriteSheet {
         if(yOffset + spriteHeight > destBuf.getHeight()) return;
 
         destBuf.draw(spriteSheetBuf, startX, startY, spriteWidth, spriteHeight, xOffset, yOffset,
-                transparentCol, color, bgColor );
+                transparentColor, color, bgColor );
     }
 }

@@ -6,8 +6,8 @@ public class Terminal {
 
     private final SpriteSheet fontSpriteSheet;
     private final RenderBuffer renderBuffer;
-    private Color foregroundColor = Color.white;
-    private Color backgroundColor = Color.black;
+    private Color defaultForegroundColor = Color.white;
+    private Color defaultBackgroundColor = Color.black;
 
     private final int cols;
     private final int rows;
@@ -37,50 +37,46 @@ public class Terminal {
     }
 
     public void clear() {
-        clear(backgroundColor);
+        clear(defaultBackgroundColor);
     }
 
     public void clear(Color color) {
         renderBuffer.fill(color);
     }
 
-    public Color getForegroundColor() {
-        return foregroundColor;
+    public Color getDefaultForegroundColor() {
+        return defaultForegroundColor;
     }
 
-    public void setForegroundColor(Color foregroundColor) {
-        this.foregroundColor = foregroundColor;
+    public void setDefaultForegroundColor(Color defaultForegroundColor) {
+        this.defaultForegroundColor = defaultForegroundColor;
     }
 
-    public Color getBackgroundColor() {
-        return backgroundColor;
+    public Color getDefaultBackgroundColor() {
+        return defaultBackgroundColor;
     }
 
-    public void setBackgroundColor(Color backgroundColor) {
-        this.backgroundColor = backgroundColor;
+    public void setDefaultBackgroundColor(Color defaultBackgroundColor) {
+        this.defaultBackgroundColor = defaultBackgroundColor;
     }
 
 
     public void write(String str, int col, int row, Color foregroundColor) {
-        write(str, col, row, foregroundColor, null);
+        write(str, col, row, foregroundColor, defaultBackgroundColor);
     }
 
     public void write(String str, int col, int row, Color foregroundColor, Color backgroundColor) {
-
-        if(foregroundColor != null) setForegroundColor(foregroundColor);
-        if(backgroundColor != null) setBackgroundColor(backgroundColor);
-
-        write(str, col, row);
-    }
-
-    public void write(String str, int col, int row) {
         for(int i = 0; i < str.length(); i++) {
             char c = str.charAt(i);
-            write( c, col + i, row);
+            write( c, col + i, row, foregroundColor, backgroundColor);
         }
     }
 
-    public void write(char c, int col, int row) {
+    public void write(String str, int col, int row) {
+        write(str, col, row, defaultForegroundColor);
+    }
+
+    public void write(char c, int col, int row, Color foregroundColor, Color backgroundColor) {
 
         int val = (int)c;
         int cy = val / fontSpriteSheet.numCols;
@@ -92,16 +88,11 @@ public class Terminal {
     }
 
     public void write(char c, int col, int row, Color foregroundColor) {
-
-        write(c, col, row, foregroundColor, null);
+        write(c, col, row, foregroundColor, defaultBackgroundColor);
     }
 
-    public void write(char c, int col, int row, Color foregroundColor, Color backgroundColor) {
-
-        if(foregroundColor != null) setForegroundColor(foregroundColor);
-        if(backgroundColor != null) setBackgroundColor(backgroundColor);
-
-        write( c, col, row);
+    public void write(char c, int col, int row) {
+        write(c, col, row, defaultForegroundColor);
     }
 
     public RenderBuffer getRenderBuffer() {
