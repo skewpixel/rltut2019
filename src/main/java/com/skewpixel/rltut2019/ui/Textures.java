@@ -6,7 +6,7 @@ import java.io.IOException;
 
 public class Textures {
 
-    public static RenderBuffer font = loadBitmap("/font.png");
+  //  public static RenderBuffer font = loadBitmap("/font.png");
 
 
     public static RenderBuffer loadBitmap(String path) {

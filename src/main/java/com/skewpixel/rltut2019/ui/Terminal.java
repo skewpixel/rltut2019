@@ -12,8 +12,9 @@ public class Terminal {
     private final int cols;
     private final int rows;
 
-    public Terminal(SpriteSheet fontSpriteSheet, int cols, int rows) {
-        this.fontSpriteSheet = fontSpriteSheet;
+    public Terminal(TerminalFont font, int cols, int rows) {
+        this.fontSpriteSheet = new SpriteSheet(font.getCharacterWidth(), font.getCharacterHeight(),
+                                                Textures.loadBitmap(font.getFontTextureFile()), font.getTransparentColor());
         this.cols = cols;
         this.rows = rows;
         this.renderBuffer = new RenderBuffer(cols * this.fontSpriteSheet.getSpriteWidth(),

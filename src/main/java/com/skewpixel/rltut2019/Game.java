@@ -1,13 +1,19 @@
 package com.skewpixel.rltut2019;
 
+import com.skewpixel.rltut2019.creatures.Creature;
 import com.skewpixel.rltut2019.map.World;
 import com.skewpixel.rltut2019.renderer.GameRenderer;
+import com.skewpixel.rltut2019.screens.PlayScreen;
+import com.skewpixel.rltut2019.screens.Screen;
 import com.skewpixel.rltut2019.ui.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Game implements Runnable, KeyListener {
     private static final Logger logger = LoggerFactory.getLogger(Game.class);
@@ -19,6 +25,8 @@ public class Game implements Runnable, KeyListener {
     private static final int WorldWidth = 90;
     private static final int WorldHeight = 31;
     private final World world;
+    private final List<Creature> creatures = new ArrayList<>();
+    private final Creature player;
 
     private Thread gameThread;
     private volatile boolean running = false;
@@ -28,15 +36,26 @@ public class Game implements Runnable, KeyListener {
 
     private final GameRenderer renderer;
 
+    private Screen currentScreen;
+
     public Game() {
         logger.info("Creating game window");
-        terminal = new Terminal(new SpriteSheet(9, 16, Textures.font, Colors.Fuchsia), ScreenCols, ScreenRows);
+        terminal = new Terminal(TerminalFont.DefaultFont, ScreenCols, ScreenRows);
 
         renderCanvas = new RenderCanvas(terminal.getWidth(), terminal.getHeight());
         createGameWindow(false);
 
         world = new World(WorldWidth, WorldHeight);
-        renderer = new GameRenderer(terminal, world);
+
+        renderer = new GameRenderer(terminal);
+
+        player = new Creature('@', Color.red, world);
+        player.setX(terminal.getCols()/2);
+        player.setY(terminal.getRows()/2);
+        creatures.add(player);
+
+        currentScreen = new PlayScreen(world, player, creatures);
+        renderer.addRenderable(currentScreen);
     }
 
     private void createGameWindow(boolean fullscreen) {
@@ -101,7 +120,7 @@ public class Game implements Runnable, KeyListener {
             gameWindow.setVisible(true);
         }
         else {
-            renderer.keyPressed(e);
+            currentScreen.onKeyPressed(e);
         }
     }
 
