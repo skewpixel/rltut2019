@@ -1,6 +1,8 @@
 package com.skewpixel.rltut2019;
 
-import com.skewpixel.rltut2019.creatures.Creature;
+import com.skewpixel.rltut2019.ecs.Entity;
+import com.skewpixel.rltut2019.ecs.components.GlyphComponent;
+import com.skewpixel.rltut2019.ecs.components.PositionComponent;
 import com.skewpixel.rltut2019.map.World;
 import com.skewpixel.rltut2019.renderer.GameRenderer;
 import com.skewpixel.rltut2019.screens.PlayScreen;
@@ -25,8 +27,8 @@ public class Game implements Runnable {
     private static final int WorldWidth = 90;
     private static final int WorldHeight = 31;
     private final World world;
-    private final List<Creature> creatures = new ArrayList<>();
-    private final Creature player;
+    private final List<Entity> entities = new ArrayList<>();
+    private final Entity player;
 
     private Thread gameThread;
     private volatile boolean running = false;
@@ -58,12 +60,13 @@ public class Game implements Runnable {
 
         renderer = new GameRenderer(terminal);
 
-        player = new Creature('@', Color.red, world);
-        player.setX(terminal.getCols()/2);
-        player.setY(terminal.getRows()/2);
-        creatures.add(player);
+        player = new Entity();
 
-        currentScreen = new PlayScreen(world, player, creatures, inputService);
+        player.addComponent(new GlyphComponent('@', Color.red));
+        player.addComponent(new PositionComponent(terminal.getCols()/2, terminal.getRows()/2, 0));
+        entities.add(player);
+
+        currentScreen = new PlayScreen(world, player, entities, inputService);
         renderer.addRenderable(currentScreen);
     }
 
@@ -78,8 +81,7 @@ public class Game implements Runnable {
         gameWindow.setFullscreen(fullscreen);
 
         gameWindow.addKeyListener(inputService);
-        gameWindow.addFocusListener(inputService)
-        ;
+        gameWindow.addFocusListener(inputService)        ;
         gameWindow.add(this.renderCanvas);
         gameWindow.pack();
     }
