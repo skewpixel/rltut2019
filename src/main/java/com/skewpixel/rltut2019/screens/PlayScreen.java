@@ -1,6 +1,5 @@
 package com.skewpixel.rltut2019.screens;
 
-import com.skewpixel.rltut2019.creatures.Creature;
 import com.skewpixel.rltut2019.ecs.Entity;
 import com.skewpixel.rltut2019.ecs.components.PositionComponent;
 import com.skewpixel.rltut2019.map.World;
@@ -8,7 +7,6 @@ import com.skewpixel.rltut2019.renderer.GlyphEntityRenderer;
 import com.skewpixel.rltut2019.renderer.MapRenderer;
 import com.skewpixel.rltut2019.services.InputService;
 import com.skewpixel.rltut2019.ui.Terminal;
-import javafx.geometry.Pos;
 
 import java.util.List;
 
