@@ -14,6 +14,11 @@ public class World {
         for(int i = 0; i < width*height; i++) {
             this.tiles[i] = Tile.Floor;
         }
+
+        for(int y = 5; y < 10; y++) {
+            tiles[10 + y * width] = Tile.Wall;
+            tiles[20 + y * width] = Tile.Wall;
+        }
     }
 
     public int getWidth() {
