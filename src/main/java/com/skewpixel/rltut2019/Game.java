@@ -2,13 +2,18 @@ package com.skewpixel.rltut2019;
 
 import com.skewpixel.rltut2019.ecs.Entity;
 import com.skewpixel.rltut2019.ecs.components.GlyphComponent;
+import com.skewpixel.rltut2019.ecs.components.MovementComponent;
 import com.skewpixel.rltut2019.ecs.components.PositionComponent;
+import com.skewpixel.rltut2019.ecs.systems.MovementGameSystem;
+import com.skewpixel.rltut2019.ecs.systems.PlayerInputGameSystem;
 import com.skewpixel.rltut2019.map.World;
 import com.skewpixel.rltut2019.renderer.GameRenderer;
 import com.skewpixel.rltut2019.screens.PlayScreen;
 import com.skewpixel.rltut2019.screens.Screen;
 import com.skewpixel.rltut2019.services.InputService;
 import com.skewpixel.rltut2019.ui.*;
+import com.skewpixel.rltut2019.ecs.systems.GameSystem;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +44,8 @@ public class Game implements Runnable {
     private final GameRenderer renderer;
     private final InputService inputService;
 
+    private final List<GameSystem> gameSystems = new ArrayList<>();
+
     private Screen currentScreen;
 
     public Game() {
@@ -56,7 +63,7 @@ public class Game implements Runnable {
 
         createGameWindow(false);
 
-        world = new World(WorldWidth, WorldHeight);
+        world = new World(WorldWidth, WorldHeight, entities);
 
         renderer = new GameRenderer(terminal);
 
@@ -64,10 +71,14 @@ public class Game implements Runnable {
 
         player.addComponent(new GlyphComponent('@', Color.red));
         player.addComponent(new PositionComponent(terminal.getCols()/2, terminal.getRows()/2, 0));
+        player.addComponent(new MovementComponent());
         entities.add(player);
 
-        currentScreen = new PlayScreen(world, player, entities, inputService);
+        currentScreen = new PlayScreen(world, entities);
         renderer.addRenderable(currentScreen);
+
+        gameSystems.add(new PlayerInputGameSystem(inputService, player));
+        gameSystems.add(new MovementGameSystem(world));
     }
 
     private void createGameWindow(boolean fullscreen) {
@@ -81,7 +92,7 @@ public class Game implements Runnable {
         gameWindow.setFullscreen(fullscreen);
 
         gameWindow.addKeyListener(inputService);
-        gameWindow.addFocusListener(inputService)        ;
+        gameWindow.addFocusListener(inputService);
         gameWindow.add(this.renderCanvas);
         gameWindow.pack();
     }
@@ -183,6 +194,9 @@ public class Game implements Runnable {
     private void tick() {
         processKeys();
         currentScreen.update();
+        for(GameSystem gameSystem : gameSystems) {
+            gameSystem.tick();
+        }
     }
 
     private void processKeys() {

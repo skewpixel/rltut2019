@@ -22,7 +22,7 @@ public class Launcher {
         logger.info("Done launching game class");
 
 
-//        long startTime = System.nanoTime();
+//        long startTime = GameSystem.nanoTime();
 //        int iterationCount = 100000;
 //        long sleepTime = 500000;
 //
@@ -31,7 +31,7 @@ public class Launcher {
 //        for(int i = 0; i < iterationCount; i++)
 //            LockSupport.parkNanos(sleepTime);
 //
-//        long endTime = System.nanoTime();
+//        long endTime = GameSystem.nanoTime();
 //
 //        long duration = endTime - startTime;
 //
