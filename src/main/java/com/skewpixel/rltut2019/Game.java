@@ -7,6 +7,8 @@ import com.skewpixel.rltut2019.ecs.components.PositionComponent;
 import com.skewpixel.rltut2019.ecs.systems.MovementGameSystem;
 import com.skewpixel.rltut2019.ecs.systems.PlayerInputGameSystem;
 import com.skewpixel.rltut2019.map.World;
+import com.skewpixel.rltut2019.map.WorldBuilder;
+import com.skewpixel.rltut2019.map.WorldDefinition;
 import com.skewpixel.rltut2019.renderer.GameRenderer;
 import com.skewpixel.rltut2019.screens.PlayScreen;
 import com.skewpixel.rltut2019.screens.Screen;
@@ -26,11 +28,11 @@ public class Game implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(Game.class);
 
     private static final int ScreenCols = 80;
-    private static final int ScreenRows = 21;
+    private static final int ScreenRows = 50;
     private Terminal terminal;
 
-    private static final int WorldWidth = 90;
-    private static final int WorldHeight = 31;
+    private static final int WorldWidth = 80;
+    private static final int WorldHeight = 45;
     private final World world;
     private final List<Entity> entities = new ArrayList<>();
     private final Entity player;
@@ -63,7 +65,7 @@ public class Game implements Runnable {
 
         createGameWindow(false);
 
-        world = new World(WorldWidth, WorldHeight, entities);
+        world = WorldBuilder.buildWorld(new WorldDefinition(WorldWidth, WorldHeight, 10, 6, 15), entities);
 
         renderer = new GameRenderer(terminal);
 

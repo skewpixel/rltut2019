@@ -11,21 +11,11 @@ public class World {
     private final Tile[] tiles;
     private final List<Entity> entities;
 
-    public World(int width, int height, List<Entity> entities) {
+    public World(int width, int height, Tile[] worldTiles, List<Entity> entities) {
         this.width = width;
         this.height = height;
-        this.tiles = new Tile[width * height];
+        this.tiles = worldTiles;
         this.entities = entities;
-
-        // fill the world with floor
-        for(int i = 0; i < width*height; i++) {
-            this.tiles[i] = Tile.Floor;
-        }
-
-        for(int y = 5; y < 10; y++) {
-            tiles[10 + y * width] = Tile.Wall;
-            tiles[20 + y * width] = Tile.Wall;
-        }
     }
 
     public int getWidth() {
