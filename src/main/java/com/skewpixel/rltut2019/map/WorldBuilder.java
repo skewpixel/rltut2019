@@ -9,18 +9,23 @@ import java.util.Random;
 public class WorldBuilder {
 
     private Tile[] tiles;
-    private WorldDefinition defn;
+    private WorldDefinition worldDefinition;
     private Random random;
+    private Point spawnPoint;
 
-    private WorldBuilder(WorldDefinition defn) {
-        this.defn = defn;
+    private WorldBuilder(WorldDefinition worldDefinition) {
+        this.worldDefinition = worldDefinition;
         this.random = new Random(System.currentTimeMillis());
-        this.tiles = new Tile[defn.worldWidth * defn.worldHeight];
+        this.tiles = new Tile[worldDefinition.worldWidth * worldDefinition.worldHeight];
 
         // fill the world with floor
-        for(int i = 0; i < defn.worldWidth * defn.worldHeight; i++) {
+        for(int i = 0; i < worldDefinition.worldWidth * worldDefinition.worldHeight; i++) {
             this.tiles[i] = Tile.Wall;
         }
+    }
+
+    public Point getSpawnPoint() {
+        return spawnPoint;
     }
 
     public static World buildWorld(WorldDefinition defn, List<Entity> entities) {
@@ -29,7 +34,7 @@ public class WorldBuilder {
 
         builder.build();
 
-        return new World(defn.worldWidth, defn.worldHeight, builder.tiles, entities);
+        return new World(defn.worldWidth, defn.worldHeight, builder.tiles, entities, builder.getSpawnPoint());
     }
 
     private void build() {
@@ -47,13 +52,13 @@ public class WorldBuilder {
         int numRooms = 0;
         List<Rect> rooms = new ArrayList<>();
 
-        for(int count = 0; count < defn.maxRooms; count++) {
-            int width = randomInt(defn.minRoomSize, defn.maxRoomSize);
-            int height = randomInt(defn.minRoomSize, defn.maxRoomSize);
+        for(int count = 0; count < worldDefinition.maxRooms; count++) {
+            int width = randomInt(worldDefinition.minRoomSize, worldDefinition.maxRoomSize);
+            int height = randomInt(worldDefinition.minRoomSize, worldDefinition.maxRoomSize);
 
             // location
-            int x = randomInt(0, defn.worldWidth - width - 1);
-            int y = randomInt(0, defn.worldHeight - height - 1);
+            int x = randomInt(0, worldDefinition.worldWidth - width - 1);
+            int y = randomInt(0, worldDefinition.worldHeight - height - 1);
 
             Rect room = new Rect(x, y, width, height);
 
@@ -66,8 +71,9 @@ public class WorldBuilder {
 
                     Point roomCenter = room.getCenter();
 
-                    if(numRooms == 0) {
+                    if(numRooms == 1) {
                         // player x, y = roomCenter;
+                        spawnPoint = roomCenter;
                     }
                     else {
                         // get the center of the previous room
@@ -97,7 +103,7 @@ public class WorldBuilder {
         // go through the tiles in the rectangle and set them to floors
         for(int x = room.p1.x + 1; x < room.p2.x; x++) {
             for(int y = room.p1.y + 1; y < room.p2.y; y++) {
-                this.tiles[x + y * defn.worldWidth] = Tile.Floor;
+                this.tiles[x + y * worldDefinition.worldWidth] = Tile.Floor;
             }
         }
     }
@@ -107,7 +113,7 @@ public class WorldBuilder {
         int maxY = Math.max(y1, y2);
 
         for(int y = minY; y <= maxY; y ++) {
-            this.tiles[x + y * defn.worldWidth] = Tile.Floor;
+            this.tiles[x + y * worldDefinition.worldWidth] = Tile.Floor;
         }
     }
 
@@ -117,7 +123,7 @@ public class WorldBuilder {
         int maxX = Math.max(x1, x2);
 
         for(int x = minX; x <= maxX; x ++) {
-            this.tiles[x + y * defn.worldWidth] = Tile.Floor;
+            this.tiles[x + y * worldDefinition.worldWidth] = Tile.Floor;
         }
     }
 }

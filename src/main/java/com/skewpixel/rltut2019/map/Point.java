@@ -8,4 +8,9 @@ public class Point {
         this.x = x;
         this.y = y;
     }
+
+    public Point(Point other) {
+        x = other.x;
+        y = other.y;
+    }
 }

@@ -72,7 +72,7 @@ public class Game implements Runnable {
         player = new Entity();
 
         player.addComponent(new GlyphComponent('@', Color.red));
-        player.addComponent(new PositionComponent(terminal.getCols()/2, terminal.getRows()/2, 0));
+        player.addComponent(new PositionComponent(world.getSpawnPoint().x, world.getSpawnPoint().y, 0));
         player.addComponent(new MovementComponent());
         entities.add(player);
 
