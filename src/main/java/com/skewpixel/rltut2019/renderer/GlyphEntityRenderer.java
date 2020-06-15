@@ -8,7 +8,8 @@ import com.skewpixel.rltut2019.ui.Terminal;
 
 import java.util.List;
 
-public class GlyphEntityRenderer implements Renderable {
+public class GlyphEntityRenderer implements Renderer {
+    public static final String NAME = "renderer.glyph_entity_renderer";
 
     // TODO: get this from game state when required
     private final List<Entity> entities;

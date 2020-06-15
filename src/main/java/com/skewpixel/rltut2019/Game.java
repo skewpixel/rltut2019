@@ -1,17 +1,20 @@
 package com.skewpixel.rltut2019;
 
 import com.skewpixel.rltut2019.ecs.Entity;
-import com.skewpixel.rltut2019.ecs.components.GlyphComponent;
-import com.skewpixel.rltut2019.ecs.components.MovementComponent;
-import com.skewpixel.rltut2019.ecs.components.PositionComponent;
+import com.skewpixel.rltut2019.ecs.components.*;
+import com.skewpixel.rltut2019.ecs.systems.FieldOfViewSystem;
 import com.skewpixel.rltut2019.ecs.systems.MovementGameSystem;
 import com.skewpixel.rltut2019.ecs.systems.PlayerInputGameSystem;
+import com.skewpixel.rltut2019.map.FovCache;
 import com.skewpixel.rltut2019.map.World;
 import com.skewpixel.rltut2019.map.WorldBuilder;
 import com.skewpixel.rltut2019.map.WorldDefinition;
 import com.skewpixel.rltut2019.renderer.GameRenderer;
+import com.skewpixel.rltut2019.renderer.GlyphEntityRenderer;
+import com.skewpixel.rltut2019.renderer.MapRenderer;
 import com.skewpixel.rltut2019.screens.PlayScreen;
 import com.skewpixel.rltut2019.screens.Screen;
+import com.skewpixel.rltut2019.services.EventService;
 import com.skewpixel.rltut2019.services.InputService;
 import com.skewpixel.rltut2019.ui.*;
 import com.skewpixel.rltut2019.ecs.systems.GameSystem;
@@ -20,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
+import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +37,10 @@ public class Game implements Runnable {
 
     private static final int WorldWidth = 80;
     private static final int WorldHeight = 45;
+
     private final World world;
+    private final FovCache fovCache;
+
     private final List<Entity> entities = new ArrayList<>();
     private final Entity player;
 
@@ -45,6 +52,7 @@ public class Game implements Runnable {
 
     private final GameRenderer renderer;
     private final InputService inputService;
+    private final EventService eventService;
 
     private final List<GameSystem> gameSystems = new ArrayList<>();
 
@@ -54,7 +62,9 @@ public class Game implements Runnable {
         logger.info("Creating game window");
         terminal = new Terminal(TerminalFont.DefaultFont, ScreenCols, ScreenRows);
 
-        renderCanvas = new RenderCanvas(terminal.getWidth(), terminal.getHeight());
+        //
+        // Input service
+        ///
         inputService = new InputService();
         inputService.addKeyMapping("quit", KeyEvent.VK_ESCAPE);
         inputService.addKeyMapping("fullscreen", KeyEvent.VK_ENTER);
@@ -63,24 +73,56 @@ public class Game implements Runnable {
         inputService.addKeyMapping("left", KeyEvent.VK_A);
         inputService.addKeyMapping("right", KeyEvent.VK_D);
 
-        createGameWindow(false);
-
+        //
+        // Game world
+        ///
         world = WorldBuilder.buildWorld(new WorldDefinition(WorldWidth, WorldHeight, 10, 6, 15), entities);
 
+        //
+        // Events service
+        //
+        eventService = new EventService();
+
+        //
+        // Rendering part 1
+        ///
+        renderCanvas = new RenderCanvas(terminal.getWidth(), terminal.getHeight());
         renderer = new GameRenderer(terminal);
 
+        fovCache = new FovCache(world.getWidth(), world.getHeight());
+        renderer.addRenderer(MapRenderer.NAME, new MapRenderer(world, fovCache));
+        renderer.addRenderer(GlyphEntityRenderer.NAME, new GlyphEntityRenderer(entities));
+
+        //
+        // Game Window
+        ///
+        createGameWindow(false);
+
+        //
+        // Player
+        ///
         player = new Entity();
 
         player.addComponent(new GlyphComponent('@', Color.red));
         player.addComponent(new PositionComponent(world.getSpawnPoint().x, world.getSpawnPoint().y, 0));
         player.addComponent(new MovementComponent());
+        player.addComponent(new PlayerComponent());
+        FovComponent fovComponent = new FovComponent(5);
+        player.addComponent(fovComponent);
         entities.add(player);
 
-        currentScreen = new PlayScreen(world, entities);
-        renderer.addRenderable(currentScreen);
-
+        //
+        // Game Systems
+        ///
         gameSystems.add(new PlayerInputGameSystem(inputService, player));
-        gameSystems.add(new MovementGameSystem(world));
+        gameSystems.add(new MovementGameSystem(world, eventService));
+        gameSystems.add(new FieldOfViewSystem(world, fovCache, fovComponent.viewRadius, eventService));
+
+        //
+        // Rendering part 2
+        ///
+        currentScreen = new PlayScreen(renderer);
+        renderer.addRenderable(currentScreen);
     }
 
     private void createGameWindow(boolean fullscreen) {
@@ -212,7 +254,10 @@ public class Game implements Runnable {
     }
 
     private void render() {
+        // get all the renderers to render
         renderer.render();
+
+        // render the terminal into the canvas
         renderCanvas.render(terminal.getRenderBuffer());
     }
 }

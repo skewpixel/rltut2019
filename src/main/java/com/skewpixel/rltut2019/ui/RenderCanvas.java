@@ -24,8 +24,8 @@ public class RenderCanvas extends Canvas {
         this.height = height;
         this.scale = scale;
 
-        img = new BufferedImage(this.width, this.height, BufferedImage.TYPE_INT_RGB);
-        pixels = ((DataBufferInt)img.getRaster().getDataBuffer()).getData();
+        this.img = new BufferedImage(this.width, this.height, BufferedImage.TYPE_INT_RGB);
+        this.pixels = ((DataBufferInt)img.getRaster().getDataBuffer()).getData();
     }
 
     public void render(RenderBuffer srcBuf) {

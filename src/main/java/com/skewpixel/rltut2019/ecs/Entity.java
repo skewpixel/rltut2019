@@ -13,8 +13,22 @@ public class Entity {
         componentMap.put(component.getName(), component);
     }
 
+    public boolean hasComponent(String componentName) {
+        return componentMap.containsKey(componentName);
+    }
+
+    public <T extends Component> boolean hasComponent(Class<T> clazz) {
+        for(Map.Entry<String, Component> es : componentMap.entrySet()){
+            if(clazz.isInstance(es.getValue())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public <T extends Component> T getComponentByName(String componentName, Class<T> clazz) {
-        if(componentMap.containsKey(componentName)){
+        if(hasComponent(componentName)){
             Component c = componentMap.get(componentName);
 
             if(clazz.isInstance(c)) {

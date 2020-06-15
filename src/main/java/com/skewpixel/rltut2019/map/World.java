@@ -8,8 +8,10 @@ import java.util.List;
 public class World {
     private final int width;
     private final int height;
+
     private final Tile[] tiles;
     private final List<Entity> entities;
+
     private Point spawnPoint;
 
     public World(int width, int height, Tile[] worldTiles, List<Entity> entities, Point spawnPoint) {
@@ -18,6 +20,7 @@ public class World {
         this.tiles = worldTiles;
         this.entities = entities;
         this.spawnPoint = spawnPoint;
+
     }
 
     public Point getSpawnPoint() {
