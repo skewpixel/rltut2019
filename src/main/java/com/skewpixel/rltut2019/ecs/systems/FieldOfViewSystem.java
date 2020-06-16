@@ -26,7 +26,7 @@ public class FieldOfViewSystem implements GameSystem, EventListener {
 
 
     @Override
-    public void tick() {
+    public void tick(long time) {
         // NoOp
     }
 

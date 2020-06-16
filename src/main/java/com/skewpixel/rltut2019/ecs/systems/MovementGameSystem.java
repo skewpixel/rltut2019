@@ -19,7 +19,7 @@ public class MovementGameSystem implements GameSystem {
     }
 
     @Override
-    public void tick() {
+    public void tick(long time) {
         for(Entity entity : world.getEntities()) {
             MovementComponent mc = entity.getComponentByName(MovementComponent.Name, MovementComponent.class);
             PositionComponent pc = entity.getComponentByName(PositionComponent.Name, PositionComponent.class);

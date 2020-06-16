@@ -17,7 +17,7 @@ public class PlayerInputGameSystem implements GameSystem {
     }
 
     @Override
-    public void tick() {
+    public void tick(long time) {
         if(inputService.isKeyPressed("forward")) {
             moveComponent.newY = playerPosn.y-1;
         }

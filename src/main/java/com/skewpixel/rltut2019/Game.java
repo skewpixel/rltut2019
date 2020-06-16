@@ -189,7 +189,7 @@ public class Game implements Runnable {
 
         double nextFrame = currentMillis;
         long nextGameTick = currentMillis;
-
+        long lastUpdateTime = 0;
         while(running) {
             currentMillis = GameTimer.getTime();
 
@@ -198,7 +198,8 @@ public class Game implements Runnable {
             long updateTime = GameTimer.getTime();
 
             while((updateTime >= nextGameTick) && (ticksLoop < maxFrameSkip)) {
-                tick();
+                tick(updateTime - lastUpdateTime);
+                lastUpdateTime = updateTime;
 
                 nextGameTick += tickTime;
                 ticksLoop++;
@@ -235,11 +236,11 @@ public class Game implements Runnable {
         gameWindow.close();
     }
 
-    private void tick() {
+    private void tick(long time) {
         processKeys();
         currentScreen.update();
         for(GameSystem gameSystem : gameSystems) {
-            gameSystem.tick();
+            gameSystem.tick(time);
         }
     }
 
