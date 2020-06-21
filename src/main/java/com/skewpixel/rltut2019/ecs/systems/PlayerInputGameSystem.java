@@ -18,17 +18,17 @@ public class PlayerInputGameSystem implements GameSystem {
 
     @Override
     public void tick(long time) {
-        if(inputService.isKeyPressed("forward")) {
-            moveComponent.newY = playerPosn.y-1;
+        if(inputService.isKeyPressed("forward", true)) {
+            moveComponent.newY = playerPosn.y - 1;
         }
-        if(inputService.isKeyPressed("backward")) {
-            moveComponent.newY = playerPosn.y+1;
+        if(inputService.isKeyPressed("backward", true)) {
+            moveComponent.newY = playerPosn.y + 1;
         }
-        if(inputService.isKeyPressed("left")) {
-            moveComponent.newX = playerPosn.x-1;
+        if(inputService.isKeyPressed("left", true)) {
+            moveComponent.newX = playerPosn.x - 1;
         }
-        if(inputService.isKeyPressed("right")) {
-            moveComponent.newX = playerPosn.x+1;
+        if(inputService.isKeyPressed("right", true)) {
+            moveComponent.newX = playerPosn.x + 1;
         }
     }
 }

@@ -9,6 +9,7 @@ import com.skewpixel.rltut2019.map.FovCache;
 import com.skewpixel.rltut2019.map.World;
 import com.skewpixel.rltut2019.map.WorldBuilder;
 import com.skewpixel.rltut2019.map.WorldDefinition;
+import com.skewpixel.rltut2019.renderer.TextRenderer;
 import com.skewpixel.rltut2019.renderer.GameRenderer;
 import com.skewpixel.rltut2019.renderer.GlyphEntityRenderer;
 import com.skewpixel.rltut2019.renderer.MapRenderer;
@@ -23,7 +24,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
-import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +54,8 @@ public class Game implements Runnable {
     private final InputService inputService;
     private final EventService eventService;
 
+    private final FpsComponent fpsComponent;
+
     private final List<GameSystem> gameSystems = new ArrayList<>();
 
     private Screen currentScreen;
@@ -61,6 +63,8 @@ public class Game implements Runnable {
     public Game() {
         logger.info("Creating game window");
         terminal = new Terminal(TerminalFont.DefaultFont, ScreenCols, ScreenRows);
+
+        this.fpsComponent = new FpsComponent();
 
         //
         // Input service
@@ -92,6 +96,7 @@ public class Game implements Runnable {
         fovCache = new FovCache(world.getWidth(), world.getHeight());
         renderer.addRenderer(MapRenderer.NAME, new MapRenderer(world, fovCache));
         renderer.addRenderer(GlyphEntityRenderer.NAME, new GlyphEntityRenderer(entities));
+        renderer.addRenderer("FpsRenderer", new TextRenderer(19, 0, () -> String.format("FPS: %d, TPS: %d", fpsComponent.fps, fpsComponent.tps)));
 
         //
         // Game Window
@@ -117,6 +122,7 @@ public class Game implements Runnable {
         gameSystems.add(new PlayerInputGameSystem(inputService, player));
         gameSystems.add(new MovementGameSystem(world, eventService));
         gameSystems.add(new FieldOfViewSystem(world, fovCache, fovComponent.viewRadius, eventService));
+
 
         //
         // Rendering part 2
@@ -198,7 +204,7 @@ public class Game implements Runnable {
             long updateTime = GameTimer.getTime();
 
             while((updateTime >= nextGameTick) && (ticksLoop < maxFrameSkip)) {
-                tick(updateTime - lastUpdateTime);
+                tick(updateTime);
                 lastUpdateTime = updateTime;
 
                 nextGameTick += tickTime;
@@ -211,7 +217,8 @@ public class Game implements Runnable {
             frames++;
 
             if(currentMillis - secondsCounter >= 1000) {
-                System.out.println(frames + " fps, " + ticks + " tps");
+                fpsComponent.fps = frames;
+                fpsComponent.tps = ticks;
                 frames = 0;
                 ticks = 0;
                 secondsCounter = currentMillis;
@@ -237,18 +244,24 @@ public class Game implements Runnable {
     }
 
     private void tick(long time) {
-        processKeys();
-        currentScreen.update();
-        for(GameSystem gameSystem : gameSystems) {
-            gameSystem.tick(time);
+        if(!gameWindow.hasFocus()) {
+            // pause?
+        }
+        else {
+            inputService.tick(time);
+            processKeys();
+            currentScreen.update();
+            for (GameSystem gameSystem : gameSystems) {
+                gameSystem.tick(time);
+            }
         }
     }
 
     private void processKeys() {
-        if(inputService.isKeyPressed("quit")) {
+        if(inputService.isKeyPressed("quit", true)) {
             stop();
         }
-        else if(inputService.isKeyPressed("fullscreen")) {
+        else if(inputService.isKeyPressed("fullscreen", true)) {
             createGameWindow(!gameWindow.isFullscreen());
             gameWindow.setVisible(true);
         }
