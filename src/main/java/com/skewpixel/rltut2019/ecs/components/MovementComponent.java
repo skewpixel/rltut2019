@@ -11,4 +11,9 @@ public class MovementComponent implements Component {
     public String getName() {
         return Name;
     }
+
+    @Override
+    public String toString() {
+        return String.format("{ mx=%d, my=%d, ml=%d }", newX, newY, newLevel);
+    }
 }

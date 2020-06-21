@@ -22,4 +22,9 @@ public class PositionComponent implements Component {
     public String getName() {
         return Name;
     }
+
+    @Override
+    public String toString() {
+        return String.format("{ x=%d, y=%d, l=%d }", x, y, level);
+    }
 }

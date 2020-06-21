@@ -25,6 +25,7 @@ public class MovementGameSystem implements GameSystem {
             PositionComponent pc = entity.getComponentByName(PositionComponent.Name, PositionComponent.class);
 
             if((mc != null) && (pc != null) && (requiresProcessing(mc))) {
+                // TODO: check for no move
                 int dx = mc.newX != null ? mc.newX : pc.x;
                 int dy = mc.newY != null ? mc.newY : pc.y;
                 int dl = mc.newLevel != null ? mc.newLevel : pc.level;

@@ -9,6 +9,13 @@ public class Entity {
 
     private Map<String, Component> componentMap = new HashMap<>();
 
+    public Entity(){}
+
+    public Entity(Component... components){
+        for(Component component :components) {
+            addComponent(component);
+        }
+    }
     public void addComponent(Component component) {
         componentMap.put(component.getName(), component);
     }
