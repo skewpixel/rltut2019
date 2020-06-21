@@ -6,16 +6,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static com.skewpixel.rltut2019.util.RandUtils.randomInt;
+
 public class WorldBuilder {
 
     private Tile[] tiles;
     private WorldDefinition worldDefinition;
-    private Random random;
     private Point spawnPoint;
 
     private WorldBuilder(WorldDefinition worldDefinition) {
         this.worldDefinition = worldDefinition;
-        this.random = new Random(System.currentTimeMillis());
         this.tiles = new Tile[worldDefinition.worldWidth * worldDefinition.worldHeight];
 
         // fill the world with floor
@@ -32,23 +32,17 @@ public class WorldBuilder {
 
         WorldBuilder builder = new WorldBuilder(defn);
 
-        builder.build();
+        builder.build(entities);
 
         return new World(defn.worldWidth, defn.worldHeight, builder.tiles, entities, builder.getSpawnPoint());
     }
 
-    private void build() {
+    private void build(List<Entity> entities) {
 
-        buildRooms();
+        buildRooms(entities);
     }
 
-    private int randomInt(int min, int max) {
-        if(min >= max) throw new IllegalArgumentException("Min must be less than max");
-
-        return random.nextInt((max - min) + 1) + min;
-    }
-
-    private void buildRooms() {
+    private void buildRooms(List<Entity> entities) {
         int numRooms = 0;
         List<Rect> rooms = new ArrayList<>();
 
@@ -94,8 +88,27 @@ public class WorldBuilder {
                 }
             }
 
+            spawnEntities(room, entities);
+
             rooms.add(room);
             numRooms++;
+        }
+    }
+
+    private void spawnEntities(Rect room, List<Entity> entities) {
+        EntityGenerator generator = worldDefinition.getEntityGenerators().get(0);
+
+        int numEntities = randomInt(0, generator.getMaxEntities());
+
+        for(int i = 0; i < numEntities; i++) {
+            int x = randomInt(room.p1.x + 1, room.p2.x - 1);
+            int y = randomInt(room.p1.y + 1, room.p2.y - 1);
+
+            Entity e = generator.generateEntityAt(x, y);
+
+            if(e != null) {
+                entities.add(e);
+            }
         }
     }
 
