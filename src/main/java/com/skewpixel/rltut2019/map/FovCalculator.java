@@ -27,7 +27,7 @@ public class FovCalculator {
 
                 for(Point pt : line.getPoints()) {
                     Tile tile = world.getTileAt(pt.x, pt.y);
-                    cache.updateFovData(pt.x, pt.y, true, !tile.getBlocksSight(), tile.isWalkable());
+                    cache.updateFovData(pt.x, pt.y, true);
 
                     if(tile.getBlocksSight()) break;
                 }

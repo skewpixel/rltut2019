@@ -76,6 +76,7 @@ public class Game implements Runnable {
         inputService.addKeyMapping("backward", KeyEvent.VK_S);
         inputService.addKeyMapping("left", KeyEvent.VK_A);
         inputService.addKeyMapping("right", KeyEvent.VK_D);
+        inputService.addKeyMapping("togglefov", KeyEvent.VK_QUOTE);
 
         //
         // Game world
@@ -95,8 +96,9 @@ public class Game implements Runnable {
 
         fovCache = new FovCache(world.getWidth(), world.getHeight());
         renderer.addRenderer(MapRenderer.NAME, new MapRenderer(world, fovCache));
-        renderer.addRenderer(GlyphEntityRenderer.NAME, new GlyphEntityRenderer(entities));
+        renderer.addRenderer(GlyphEntityRenderer.NAME, new GlyphEntityRenderer(entities, fovCache));
         renderer.addRenderer("FpsRenderer", new TextRenderer(19, 0, () -> String.format("FPS: %d, TPS: %d", fpsComponent.fps, fpsComponent.tps)));
+        renderer.addRenderer("TestTextRenderer", new TextRenderer(0, 0, "rltut2020 v0.0.1 - "));
 
         //
         // Game Window
@@ -122,7 +124,6 @@ public class Game implements Runnable {
         gameSystems.add(new PlayerInputGameSystem(inputService, player));
         gameSystems.add(new MovementGameSystem(world, eventService));
         gameSystems.add(new FieldOfViewSystem(world, fovCache, fovComponent.viewRadius, eventService));
-
 
         //
         // Rendering part 2
@@ -179,7 +180,7 @@ public class Game implements Runnable {
     public void run() {
         logger.info("Starting game loop");
 
-        int frames  = 0;
+        int frames = 0;
         int ticks = 0;
 
         long currentMillis = GameTimer.getTime();
@@ -264,6 +265,9 @@ public class Game implements Runnable {
         else if(inputService.isKeyPressed("fullscreen", true)) {
             createGameWindow(!gameWindow.isFullscreen());
             gameWindow.setVisible(true);
+        }
+        else if(inputService.isKeyPressed("togglefov", true)) {
+            fovCache.setFovEnabled(!fovCache.isFovEnabled());
         }
     }
 
