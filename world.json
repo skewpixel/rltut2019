@@ -1,0 +1,12 @@
+{
+  "worldWidth" : "80",
+  "worldHeight" : "50",
+  "maxRoomSize": "10",
+  "minRoomSize": "6",
+  "maxRooms": "15",
+  "mobs": {
+    "maxSpawnAttempts": "10",
+    "maxOrcs": "3",
+    "maxTrolls": "2"
+  }
+}

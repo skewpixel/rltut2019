@@ -8,4 +8,5 @@ public class Colors {
     public static final Color HalfBlack = new Color(0xFF404040);
     public static final Color Fuchsia = new Color(0xFFFF00FF);
     public static final Color DarkGreen = new Color(0xFF336600);
+    public static final Color DarkBrown = new Color(0x905115);
 }

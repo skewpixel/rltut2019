@@ -1,6 +1,7 @@
 package com.skewpixel.rltut2019.map;
 
 import com.skewpixel.rltut2019.ecs.Entity;
+import com.skewpixel.rltut2019.ecs.components.NameComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +58,7 @@ public class WorldBuilder {
             if(rooms.isEmpty()) {
                 // first room is spawn room
                 // player x, y = roomCenter;
-                Point roomCenter = buildRoom(room, entities, rooms);
+                Point roomCenter = buildRoom(room, entities, rooms, false);
                 rooms.add(room);
                 spawnPoint = roomCenter;
             }
@@ -71,19 +72,21 @@ public class WorldBuilder {
                 }
 
                 if(!intersects){
-                    buildRoom(room, entities, rooms);
+                    buildRoom(room, entities, rooms, true);
                     rooms.add(room);
                 }
             }
         }
     }
 
-    private Point buildRoom(Rect room, List<Entity> entities, List<Rect> rooms) {
+    private Point buildRoom(Rect room, List<Entity> entities, List<Rect> rooms, boolean spawnMobs) {
         createRoom(room);
 
         Point roomCenter = room.getCenter();
 
-        spawnCreatures(room, entities);
+        if(spawnMobs) {
+            spawnCreatures(room, entities);
+        }
 
         // get the center of the previous room
         if(!rooms.isEmpty()) {
@@ -106,17 +109,27 @@ public class WorldBuilder {
     private void spawnCreatures(Rect room, List<Entity> entities) {
         EntityGenerator generator = worldDefinition.getCreatureGenerator();
 
-        int numEntities = randomInt(0, generator.getMaxEntities());
+        int numSpawns = randomInt(0, worldDefinition.mobs.maxSpawnAttempts);
 
-        System.out.println(numEntities);
-        for(int i = 0; i < numEntities; i++) {
+        int orcSpawnCount = 0;
+        int trollSpawnCount = 0;
+        for(int i = 0; i < numSpawns; i++) {
             int x = randomInt(room.p1.x + 1, room.p2.x - 1);
             int y = randomInt(room.p1.y + 1, room.p2.y - 1);
 
             Entity e = generator.generateEntityAt(x, y);
 
             if(e != null) {
-                entities.add(e);
+                NameComponent nc = e.getComponentByName(NameComponent.Name, NameComponent.class);
+
+                if(nc.name.equals("Orc") && (orcSpawnCount < worldDefinition.mobs.maxOrcs)) {
+                    orcSpawnCount++;
+                    entities.add(e);
+                }
+                else if(nc.name.equals("Troll") && (trollSpawnCount < worldDefinition.mobs.maxTrolls)) {
+                    trollSpawnCount++;
+                    entities.add(e);
+                }
             }
         }
     }

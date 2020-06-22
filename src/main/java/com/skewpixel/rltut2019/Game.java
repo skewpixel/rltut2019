@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,7 +61,7 @@ public class Game implements Runnable {
 
     private Screen currentScreen;
 
-    public Game() {
+    public Game() throws FileNotFoundException {
         logger.info("Creating game window");
         terminal = new Terminal(TerminalFont.DefaultFont, ScreenCols, ScreenRows);
 
@@ -81,7 +82,8 @@ public class Game implements Runnable {
         //
         // Game world
         ///
-        world = WorldBuilder.buildWorld(new WorldDefinition(WorldWidth, WorldHeight, 10, 6, 15), entities);
+        WorldDefinition defn = WorldDefinition.fromJson("world.json");
+        world = WorldBuilder.buildWorld(defn, entities);//new WorldDefinition(WorldWidth, WorldHeight, 10, 6, 15), entities);
 
         //
         // Events service

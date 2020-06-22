@@ -4,6 +4,7 @@ import ch.qos.logback.classic.util.ContextInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.FileNotFoundException;
 import java.util.concurrent.locks.LockSupport;
 
 public class Launcher {
@@ -17,7 +18,11 @@ public class Launcher {
         logger.info("RoguelikeDev Does the Complete Roguelike Tutorial");
         logger.info("Creating and starting main game class...");
 
-        new Game().start();
+        try {
+            new Game().start();
+        } catch (FileNotFoundException e) {
+            logger.error("Error starting game", e);
+        }
 
         logger.info("Done launching game class");
 
