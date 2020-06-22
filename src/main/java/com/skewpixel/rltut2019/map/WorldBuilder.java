@@ -4,7 +4,6 @@ import com.skewpixel.rltut2019.ecs.Entity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import static com.skewpixel.rltut2019.util.RandUtils.randomInt;
 
@@ -70,6 +69,8 @@ public class WorldBuilder {
                         spawnPoint = roomCenter;
                     }
                     else {
+                        spawnCreatures(room, entities);
+
                         // get the center of the previous room
                         Point prevCenter = rooms.get(rooms.size() - 1).getCenter();
 
@@ -88,15 +89,13 @@ public class WorldBuilder {
                 }
             }
 
-            spawnEntities(room, entities);
-
             rooms.add(room);
             numRooms++;
         }
     }
 
-    private void spawnEntities(Rect room, List<Entity> entities) {
-        EntityGenerator generator = worldDefinition.getEntityGenerators().get(0);
+    private void spawnCreatures(Rect room, List<Entity> entities) {
+        EntityGenerator generator = worldDefinition.getCreatureGenerator();
 
         int numEntities = randomInt(0, generator.getMaxEntities());
 

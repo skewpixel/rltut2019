@@ -1,8 +1,5 @@
 package com.skewpixel.rltut2019.map;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class WorldDefinition {
     public int worldWidth;
     public int worldHeight;
@@ -18,10 +15,7 @@ public class WorldDefinition {
         this.maxRooms = maxRooms;
     }
 
-    List<EntityGenerator> getEntityGenerators() {
-        List<EntityGenerator> generators = new ArrayList<>();
-        generators.add(new CreatureGenerator());
-
-        return generators;
+    public EntityGenerator getCreatureGenerator() {
+        return new CreatureGenerator();
     }
 }
