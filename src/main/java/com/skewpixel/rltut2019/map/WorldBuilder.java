@@ -42,7 +42,6 @@ public class WorldBuilder {
     }
 
     private void buildRooms(List<Entity> entities) {
-        int numRooms = 0;
         List<Rect> rooms = new ArrayList<>();
 
         for(int count = 0; count < worldDefinition.maxRooms; count++) {
@@ -55,43 +54,53 @@ public class WorldBuilder {
 
             Rect room = new Rect(x, y, width, height);
 
-            for(Rect other : rooms) {
-                if(room.intersects(other)) {
-                    break;
+            if(rooms.isEmpty()) {
+                // first room is spawn room
+                // player x, y = roomCenter;
+                Point roomCenter = buildRoom(room, entities, rooms);
+                rooms.add(room);
+                spawnPoint = roomCenter;
+            }
+            else {
+                boolean intersects = false;
+                for (Rect other : rooms) {
+                    if (room.intersects(other)) {
+                        intersects = true;
+                        break;
+                    }
                 }
-                else {
-                    createRoom(room);
 
-                    Point roomCenter = room.getCenter();
-
-                    if(numRooms == 1) {
-                        // player x, y = roomCenter;
-                        spawnPoint = roomCenter;
-                    }
-                    else {
-                        spawnCreatures(room, entities);
-
-                        // get the center of the previous room
-                        Point prevCenter = rooms.get(rooms.size() - 1).getCenter();
-
-                        // random 0 or 1
-                        if(randomInt(0, 1) == 1) {
-                            // first move horizontally and then vertically
-                            makeHTunnel(prevCenter.x, roomCenter.x, prevCenter.y);
-                            makeVTunnel(roomCenter.x, prevCenter.y, roomCenter.y);
-                        }
-                        else {
-                            // first move vertically and then horizontally
-                            makeVTunnel(prevCenter.x, prevCenter.y, roomCenter.y);
-                            makeHTunnel(prevCenter.x, roomCenter.x, prevCenter.y);
-                        }
-                    }
+                if(!intersects){
+                    buildRoom(room, entities, rooms);
+                    rooms.add(room);
                 }
             }
-
-            rooms.add(room);
-            numRooms++;
         }
+    }
+
+    private Point buildRoom(Rect room, List<Entity> entities, List<Rect> rooms) {
+        createRoom(room);
+
+        Point roomCenter = room.getCenter();
+
+        spawnCreatures(room, entities);
+
+        // get the center of the previous room
+        if(!rooms.isEmpty()) {
+            Point prevCenter = rooms.get(rooms.size() - 1).getCenter();
+
+            // random 0 or 1
+            if (randomInt(0, 1) == 1) {
+                // first move horizontally and then vertically
+                makeHTunnel(prevCenter.x, roomCenter.x, prevCenter.y);
+                makeVTunnel(roomCenter.x, prevCenter.y, roomCenter.y);
+            } else {
+                // first move vertically and then horizontally
+                makeVTunnel(prevCenter.x, prevCenter.y, roomCenter.y);
+                makeHTunnel(prevCenter.x, roomCenter.x, prevCenter.y);
+            }
+        }
+        return roomCenter;
     }
 
     private void spawnCreatures(Rect room, List<Entity> entities) {
@@ -99,6 +108,7 @@ public class WorldBuilder {
 
         int numEntities = randomInt(0, generator.getMaxEntities());
 
+        System.out.println(numEntities);
         for(int i = 0; i < numEntities; i++) {
             int x = randomInt(room.p1.x + 1, room.p2.x - 1);
             int y = randomInt(room.p1.y + 1, room.p2.y - 1);
