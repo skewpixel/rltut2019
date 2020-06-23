@@ -4,6 +4,7 @@ import com.skewpixel.rltut2019.ecs.Entity;
 import com.skewpixel.rltut2019.ecs.components.MovementComponent;
 import com.skewpixel.rltut2019.ecs.components.PlayerComponent;
 import com.skewpixel.rltut2019.ecs.components.PositionComponent;
+import com.skewpixel.rltut2019.map.Tile;
 import com.skewpixel.rltut2019.map.World;
 import com.skewpixel.rltut2019.services.EventService;
 
@@ -52,6 +53,7 @@ public class MovementGameSystem implements GameSystem {
     }
 
     private boolean isValidMove(int x, int y, int level) {
-        return world.isEmptyLocation(x, y, level);
+        Tile t = world.getTileAt(x, y);
+        return t.isWalkable();
     }
 }
