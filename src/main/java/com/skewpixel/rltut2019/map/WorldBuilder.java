@@ -2,6 +2,7 @@ package com.skewpixel.rltut2019.map;
 
 import com.skewpixel.rltut2019.ecs.Entity;
 import com.skewpixel.rltut2019.ecs.components.NameComponent;
+import com.skewpixel.rltut2019.ecs.components.PositionComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,10 +13,13 @@ public class WorldBuilder {
 
     private Tile[] tiles;
     private WorldDefinition worldDefinition;
+    private CreatureGenerator mobGenerator;
     private Point spawnPoint;
 
     private WorldBuilder(WorldDefinition worldDefinition) {
         this.worldDefinition = worldDefinition;
+        this.mobGenerator = new CreatureGenerator();
+
         this.tiles = new Tile[worldDefinition.worldWidth * worldDefinition.worldHeight];
 
         // fill the world with floor
@@ -107,9 +111,7 @@ public class WorldBuilder {
     }
 
     private void spawnCreatures(Rect room, List<Entity> entities) {
-        EntityGenerator generator = worldDefinition.getCreatureGenerator();
-
-        int numSpawns = randomInt(0, worldDefinition.mobs.maxSpawnAttempts);
+        int numSpawns = randomInt(0, worldDefinition.maxRoomSpawns);
 
         int orcSpawnCount = 0;
         int trollSpawnCount = 0;
@@ -117,19 +119,25 @@ public class WorldBuilder {
             int x = randomInt(room.p1.x + 1, room.p2.x - 1);
             int y = randomInt(room.p1.y + 1, room.p2.y - 1);
 
-            Entity e = generator.generateEntityAt(x, y);
-
-            if(e != null) {
-                NameComponent nc = e.getComponentByName(NameComponent.Name, NameComponent.class);
-
-                if(nc.name.equals("Orc") && (orcSpawnCount < worldDefinition.mobs.maxOrcs)) {
-                    orcSpawnCount++;
-                    entities.add(e);
-                }
-                else if(nc.name.equals("Troll") && (trollSpawnCount < worldDefinition.mobs.maxTrolls)) {
-                    trollSpawnCount++;
-                    entities.add(e);
-                }
+            switch (randomInt(0, 2)) {
+                case 0:
+                    if(orcSpawnCount < worldDefinition.maxOrcs) {
+                        Entity orc = mobGenerator.spawnOrc();
+                        orc.addComponent(new PositionComponent(x, y, 0));
+                        entities.add(orc);
+                        orcSpawnCount++;
+                    }
+                    break;
+                case 1:
+                    if(trollSpawnCount < worldDefinition.maxTrolls) {
+                        Entity troll = mobGenerator.spawnTroll();
+                        troll.addComponent(new PositionComponent(x, y, 0));
+                        entities.add(troll);
+                        trollSpawnCount++;
+                    }
+                    break;
+                case 2:
+                    break;
             }
         }
     }

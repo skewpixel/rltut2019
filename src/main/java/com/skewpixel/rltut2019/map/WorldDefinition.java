@@ -1,32 +1,26 @@
 package com.skewpixel.rltut2019.map;
 
-import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-
 public class WorldDefinition {
     public int worldWidth;
     public int worldHeight;
     public int maxRoomSize;
     public int minRoomSize;
     public int maxRooms;
-    public MobDefinition mobs;
+    public int maxRoomSpawns;
+    public int maxOrcs;
+    public int maxTrolls;
 
-    public WorldDefinition(int worldWidth, int worldHeight, int maxRoomSize, int minRoomSize, int maxRooms) {
+    public WorldDefinition(int worldWidth, int worldHeight,
+                           int maxRoomSize, int minRoomSize, int maxRooms,
+                           int maxRoomSpawns, int maxOrcs, int maxTrolls) {
         this.worldWidth = worldWidth;
         this.worldHeight = worldHeight;
         this.maxRoomSize = maxRoomSize;
         this.minRoomSize = minRoomSize;
         this.maxRooms = maxRooms;
+        this.maxRoomSpawns = maxRoomSpawns;
+        this.maxOrcs = maxOrcs;
+        this.maxTrolls = maxTrolls;
     }
 
-    public static WorldDefinition fromJson(String filename) throws FileNotFoundException {
-        Gson gson = new Gson();
-        FileReader reader = new FileReader(filename);
-        return (WorldDefinition) gson.fromJson(new JsonReader(reader), WorldDefinition.class);
-    }
-    public EntityGenerator getCreatureGenerator() {
-        return new CreatureGenerator();
-    }
 }

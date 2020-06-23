@@ -1,12 +1,15 @@
 {
-  "worldWidth" : "80",
-  "worldHeight" : "50",
-  "maxRoomSize": "10",
-  "minRoomSize": "6",
-  "maxRooms": "15",
-  "mobs": {
-    "maxSpawnAttempts": "10",
-    "maxOrcs": "3",
-    "maxTrolls": "2"
+  "world-width" : "80",
+  "world-height" : "45",
+  "max-room-size": "10",
+  "min-room-size": "6",
+  "max-rooms": "15",
+
+  "mob-generator": {
+    "type": "default-mobgen",
+
+    "max-spawn-attempts": "8",
+    "max-orcs": "3",
+    "max-trolls": "2"
   }
 }

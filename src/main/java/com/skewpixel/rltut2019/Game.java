@@ -5,10 +5,7 @@ import com.skewpixel.rltut2019.ecs.components.*;
 import com.skewpixel.rltut2019.ecs.systems.FieldOfViewSystem;
 import com.skewpixel.rltut2019.ecs.systems.MovementGameSystem;
 import com.skewpixel.rltut2019.ecs.systems.PlayerInputGameSystem;
-import com.skewpixel.rltut2019.map.FovCache;
-import com.skewpixel.rltut2019.map.World;
-import com.skewpixel.rltut2019.map.WorldBuilder;
-import com.skewpixel.rltut2019.map.WorldDefinition;
+import com.skewpixel.rltut2019.map.*;
 import com.skewpixel.rltut2019.renderer.TextRenderer;
 import com.skewpixel.rltut2019.renderer.GameRenderer;
 import com.skewpixel.rltut2019.renderer.GlyphEntityRenderer;
@@ -82,12 +79,11 @@ public class Game implements Runnable {
         //
         // Game world
         ///
-        WorldDefinition defn = WorldDefinition.fromJson("world.json");
-        world = WorldBuilder.buildWorld(defn, entities);//new WorldDefinition(WorldWidth, WorldHeight, 10, 6, 15), entities);
+        world = WorldBuilder.buildWorld(new WorldDefinition(WorldWidth, WorldHeight, 10, 6, 15, 8, 3, 2), entities);
 
         //
         // Events service
-        //
+        ///
         eventService = new EventService();
 
         //
