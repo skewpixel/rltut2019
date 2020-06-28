@@ -106,12 +106,9 @@ public class Game implements Runnable {
         //
         // Player
         ///
-        player = new Entity();
+        player = new Entity(new GlyphComponent('@', Color.red), new MovementComponent(), new PlayerComponent(),
+                            new BlocksMovementComponent(), new PositionComponent(world.getSpawnPoint().x, world.getSpawnPoint().y, 0));
 
-        player.addComponent(new GlyphComponent('@', Color.red));
-        player.addComponent(new PositionComponent(world.getSpawnPoint().x, world.getSpawnPoint().y, 0));
-        player.addComponent(new MovementComponent());
-        player.addComponent(new PlayerComponent());
         FovComponent fovComponent = new FovComponent(5);
         player.addComponent(fovComponent);
         entities.add(player);

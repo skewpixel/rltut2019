@@ -1,6 +1,7 @@
 package com.skewpixel.rltut2019.map;
 
 import com.skewpixel.rltut2019.ecs.Entity;
+import com.skewpixel.rltut2019.ecs.components.BlocksMovementComponent;
 import com.skewpixel.rltut2019.ecs.components.PositionComponent;
 
 import java.util.List;
@@ -42,6 +43,18 @@ public class World {
         else {
             return tiles[x + y * width];
         }
+    }
+
+    public Entity getBlockingEntityAt(int x, int y, int level) {
+        Entity e = getEntityAt(x, y, level);
+
+        if(e != null) {
+            if(e.hasComponent(BlocksMovementComponent.Name)) {
+                return e;
+            }
+        }
+
+        return null;
     }
 
     public Entity getEntityAt(int x, int y, int level) {

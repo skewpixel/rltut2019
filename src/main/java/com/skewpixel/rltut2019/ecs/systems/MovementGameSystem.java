@@ -2,6 +2,7 @@ package com.skewpixel.rltut2019.ecs.systems;
 
 import com.skewpixel.rltut2019.ecs.Entity;
 import com.skewpixel.rltut2019.ecs.components.MovementComponent;
+import com.skewpixel.rltut2019.ecs.components.NameComponent;
 import com.skewpixel.rltut2019.ecs.components.PlayerComponent;
 import com.skewpixel.rltut2019.ecs.components.PositionComponent;
 import com.skewpixel.rltut2019.map.Tile;
@@ -53,7 +54,21 @@ public class MovementGameSystem implements GameSystem {
     }
 
     private boolean isValidMove(int x, int y, int level) {
+        boolean isValid = false;
+
         Tile t = world.getTileAt(x, y);
-        return t.isWalkable();
+        if( t.isWalkable() ) {
+            Entity e = world.getBlockingEntityAt(x, y, level);
+
+            if(e == null) {
+                isValid = true;
+            }
+            else {
+                NameComponent nc = e.getComponentByName(NameComponent.Name, NameComponent.class);
+                System.out.println(String.format("You kick the %s in the shins, much to its annoyance!", nc.name));
+            }
+        }
+
+        return isValid;
     }
 }
