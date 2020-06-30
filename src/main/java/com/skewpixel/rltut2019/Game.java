@@ -1,10 +1,9 @@
 package com.skewpixel.rltut2019;
 
+import com.skewpixel.rltut2019.actions.PlayerAttackAction;
 import com.skewpixel.rltut2019.ecs.Entity;
 import com.skewpixel.rltut2019.ecs.components.*;
-import com.skewpixel.rltut2019.ecs.systems.FieldOfViewSystem;
-import com.skewpixel.rltut2019.ecs.systems.MovementGameSystem;
-import com.skewpixel.rltut2019.ecs.systems.PlayerInputGameSystem;
+import com.skewpixel.rltut2019.ecs.systems.*;
 import com.skewpixel.rltut2019.map.*;
 import com.skewpixel.rltut2019.renderer.TextRenderer;
 import com.skewpixel.rltut2019.renderer.GameRenderer;
@@ -14,8 +13,9 @@ import com.skewpixel.rltut2019.screens.PlayScreen;
 import com.skewpixel.rltut2019.screens.Screen;
 import com.skewpixel.rltut2019.services.EventService;
 import com.skewpixel.rltut2019.services.InputService;
+import com.skewpixel.rltut2019.state.GameState;
+import com.skewpixel.rltut2019.state.GlobalState;
 import com.skewpixel.rltut2019.ui.*;
-import com.skewpixel.rltut2019.ecs.systems.GameSystem;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,10 +58,14 @@ public class Game implements Runnable {
 
     private Screen currentScreen;
 
-    public Game() throws FileNotFoundException {
+    public Game() {
         logger.info("Creating game window");
         terminal = new Terminal(TerminalFont.DefaultFont, ScreenCols, ScreenRows);
 
+        // create our global game state
+        GlobalState.initialise();
+
+        // temporary component to hold fps values
         this.fpsComponent = new FpsComponent();
 
         //
@@ -119,12 +123,25 @@ public class Game implements Runnable {
         gameSystems.add(new PlayerInputGameSystem(inputService, player));
         gameSystems.add(new MovementGameSystem(world, eventService));
         gameSystems.add(new FieldOfViewSystem(world, fovCache, fovComponent.viewRadius, eventService));
+        gameSystems.add(new MobAIGameSystem(eventService, entities));
+        CollisionActionSystem cas = new CollisionActionSystem(eventService);
+        gameSystems.add(cas);
+        gameSystems.add(new GameTurnManagementSystem(eventService));
+
 
         //
         // Rendering part 2
         ///
         currentScreen = new PlayScreen(renderer);
         renderer.addRenderable(currentScreen);
+
+        //
+        // Setup our actions
+        ///
+        cas.AddAction(new PlayerAttackAction(eventService));
+
+        // game is ready to go, so player gets the first turn
+        GlobalState.get().gameState = GameState.PlayerTurn;
     }
 
     private void createGameWindow(boolean fullscreen) {

@@ -9,6 +9,7 @@ import com.skewpixel.rltut2019.map.Point;
 import com.skewpixel.rltut2019.map.World;
 import com.skewpixel.rltut2019.services.EventListener;
 import com.skewpixel.rltut2019.services.EventService;
+import com.skewpixel.rltut2019.services.EventSubjects;
 
 public class FieldOfViewSystem implements GameSystem, EventListener {
     private final EventService eventService;
@@ -18,7 +19,7 @@ public class FieldOfViewSystem implements GameSystem, EventListener {
         this.fovCalculator = new FovCalculator(world, fovCache);
 
         this.eventService = eventService;
-        this.eventService.addEventListener(MovementGameSystem.EVENT_SUBJECT_PLAYER_MOVED, this);
+        this.eventService.addEventListener(EventSubjects.EVENT_SUBJECT_PLAYER_MOVED, this);
 
         Point sp = world.getSpawnPoint();
         this.fovCalculator.calculateFov(sp.x, sp.y, 0, fovRadius);
@@ -33,7 +34,7 @@ public class FieldOfViewSystem implements GameSystem, EventListener {
     @Override
     public void handleEvent(String subject, Object context) {
         // player moved, recalculate the FOV
-        if(subject.equals(MovementGameSystem.EVENT_SUBJECT_PLAYER_MOVED)) {
+        if(subject.equals(EventSubjects.EVENT_SUBJECT_PLAYER_MOVED)) {
             // player entity is sent in the event context
             Entity player = (Entity) context;
 

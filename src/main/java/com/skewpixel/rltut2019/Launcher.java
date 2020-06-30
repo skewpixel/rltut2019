@@ -20,7 +20,7 @@ public class Launcher {
 
         try {
             new Game().start();
-        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
             logger.error("Error starting game", e);
         }
 
