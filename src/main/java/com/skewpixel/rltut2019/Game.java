@@ -1,6 +1,7 @@
 package com.skewpixel.rltut2019;
 
 import com.skewpixel.rltut2019.actions.PlayerAttackAction;
+import com.skewpixel.rltut2019.creatures.ai.BasicMobAi;
 import com.skewpixel.rltut2019.ecs.Entity;
 import com.skewpixel.rltut2019.ecs.components.*;
 import com.skewpixel.rltut2019.ecs.systems.*;
@@ -123,7 +124,9 @@ public class Game implements Runnable {
         gameSystems.add(new PlayerInputGameSystem(inputService, player));
         gameSystems.add(new MovementGameSystem(world, eventService));
         gameSystems.add(new FieldOfViewSystem(world, fovCache, fovComponent.viewRadius, eventService));
-        gameSystems.add(new MobAIGameSystem(eventService, entities));
+        MobAIGameSystem aiSys = new MobAIGameSystem(eventService, entities);
+        aiSys.addAi(new BasicMobAi());
+        gameSystems.add(aiSys);
         CollisionActionSystem cas = new CollisionActionSystem(eventService);
         gameSystems.add(cas);
         gameSystems.add(new GameTurnManagementSystem(eventService));
