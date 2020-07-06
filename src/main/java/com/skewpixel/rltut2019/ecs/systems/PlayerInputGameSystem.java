@@ -24,21 +24,28 @@ public class PlayerInputGameSystem implements GameSystem {
     public void tick(long time) {
         if(GlobalState.get().gameState == GameState.PlayerTurn) {
             if (inputService.isKeyPressed("forward", true)) {
-
                 player.addComponent(movePlayer(null, playerPosn.y - 1, null));
-                //moveComponent.newY = playerPosn.y - 1;
             }
-            if (inputService.isKeyPressed("backward", true)) {
+            else if (inputService.isKeyPressed("backward", true)) {
                 player.addComponent(movePlayer(null, playerPosn.y + 1, null));
-                //moveComponent.newY = playerPosn.y + 1;
             }
-            if (inputService.isKeyPressed("left", true)) {
+            else if (inputService.isKeyPressed("left", true)) {
                 player.addComponent(movePlayer(playerPosn.x - 1, null, null));
-                //moveComponent.newX = playerPosn.x - 1;
             }
-            if (inputService.isKeyPressed("right", true)) {
+            else if (inputService.isKeyPressed("right", true)) {
                 player.addComponent(movePlayer(playerPosn.x + 1, null, null));
-                //moveComponent.newX = playerPosn.x + 1;
+            }
+            else if (inputService.isKeyPressed("fwdleft", true)) {
+                player.addComponent(movePlayer(playerPosn.x - 1, playerPosn.y - 1, null));
+            }
+            else if (inputService.isKeyPressed("fwdright", true)) {
+                player.addComponent(movePlayer(playerPosn.x + 1, playerPosn.y - 1, null));
+            }
+            else if (inputService.isKeyPressed("backleft", true)) {
+                player.addComponent(movePlayer(playerPosn.x - 1, playerPosn.y + 1, null));
+            }
+            else if (inputService.isKeyPressed("backright", true)) {
+                player.addComponent(movePlayer(playerPosn.x + 1, playerPosn.y + 1, null));
             }
         }
     }

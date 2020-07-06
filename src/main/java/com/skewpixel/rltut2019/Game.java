@@ -75,6 +75,10 @@ public class Game implements Runnable {
         inputService.addKeyMapping("backward", KeyEvent.VK_S);
         inputService.addKeyMapping("left", KeyEvent.VK_A);
         inputService.addKeyMapping("right", KeyEvent.VK_D);
+        inputService.addKeyMapping("fwdleft", KeyEvent.VK_Q);
+        inputService.addKeyMapping("fwdright", KeyEvent.VK_E);
+        inputService.addKeyMapping("backleft", KeyEvent.VK_Z);
+        inputService.addKeyMapping("backright", KeyEvent.VK_C);
         inputService.addKeyMapping("togglefov", KeyEvent.VK_QUOTE);
 
         //
