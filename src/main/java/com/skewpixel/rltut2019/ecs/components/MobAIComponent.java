@@ -5,8 +5,15 @@ public class MobAIComponent implements Component {
 
     public String aiName;
 
+    public MobAIComponent() {}
+
     public MobAIComponent(String aiName) {
         this.aiName = aiName;
+    }
+
+    @Override
+    public void reset() {
+        aiName = null;
     }
 
     @Override

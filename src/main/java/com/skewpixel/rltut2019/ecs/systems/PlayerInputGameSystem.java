@@ -9,12 +9,14 @@ import com.skewpixel.rltut2019.state.GlobalState;
 
 public class PlayerInputGameSystem implements GameSystem {
     private final InputService inputService;
-    private final MovementComponent moveComponent;
+   // private final MovementComponent moveComponent;
     private final PositionComponent playerPosn;
+    private final Entity player;
 
     public PlayerInputGameSystem(InputService inputService, Entity player) {
         this.inputService = inputService;
-        this.moveComponent = player.getComponentByName(MovementComponent.Name, MovementComponent.class);
+        this.player = player;
+        //this.moveComponent = player.getComponentByName(MovementComponent.Name, MovementComponent.class);
         this.playerPosn = player.getComponentByName(PositionComponent.Name, PositionComponent.class);
     }
 
@@ -22,17 +24,30 @@ public class PlayerInputGameSystem implements GameSystem {
     public void tick(long time) {
         if(GlobalState.get().gameState == GameState.PlayerTurn) {
             if (inputService.isKeyPressed("forward", true)) {
-                moveComponent.newY = playerPosn.y - 1;
+
+                player.addComponent(movePlayer(null, playerPosn.y - 1, null));
+                //moveComponent.newY = playerPosn.y - 1;
             }
             if (inputService.isKeyPressed("backward", true)) {
-                moveComponent.newY = playerPosn.y + 1;
+                player.addComponent(movePlayer(null, playerPosn.y + 1, null));
+                //moveComponent.newY = playerPosn.y + 1;
             }
             if (inputService.isKeyPressed("left", true)) {
-                moveComponent.newX = playerPosn.x - 1;
+                player.addComponent(movePlayer(playerPosn.x - 1, null, null));
+                //moveComponent.newX = playerPosn.x - 1;
             }
             if (inputService.isKeyPressed("right", true)) {
-                moveComponent.newX = playerPosn.x + 1;
+                player.addComponent(movePlayer(playerPosn.x + 1, null, null));
+                //moveComponent.newX = playerPosn.x + 1;
             }
         }
+    }
+
+    private MovementComponent movePlayer(Integer x, Integer y, Integer level) {
+        MovementComponent mc = GlobalState.get().componentFactory.getComponentByName(MovementComponent.Name, MovementComponent.class);
+        mc.newX = x;
+        mc.newY = y;
+        mc.newLevel = level;
+        return mc;
     }
 }

@@ -46,6 +46,19 @@ public class Entity {
         return null;
     }
 
+    public <T extends Component> T removeComponentByName(String componentName, Class<T> clazz) {
+        if(hasComponent(componentName)){
+            Component c = componentMap.get(componentName);
+
+            if(clazz.isInstance(c)) {
+                componentMap.remove(componentName);
+                return clazz.cast(c);
+            }
+        }
+
+        return null;
+    }
+
     public <T extends Component> T getComponent(Class<T> clazz) {
         for(Map.Entry<String, Component> es : componentMap.entrySet()){
             if(clazz.isInstance(es.getValue())) {

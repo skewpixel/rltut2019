@@ -7,6 +7,12 @@ public class FpsComponent implements Component {
     public int tps;
 
     @Override
+    public void reset() {
+        fps = 0;
+        tps = 0;
+    }
+
+    @Override
     public String getName() {
         return Name;
     }

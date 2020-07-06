@@ -8,6 +8,8 @@ public class GlyphComponent implements Component {
     public Color foregroundColor;
     public Color backgroundColor;
 
+    public GlyphComponent() {}
+
     public GlyphComponent(char glyph, Color foregroundColor) {
         this.glyph = glyph;
         this.foregroundColor = foregroundColor;
@@ -17,6 +19,13 @@ public class GlyphComponent implements Component {
         this.glyph = glyph;
         this.foregroundColor = foregroundColor;
         this.backgroundColor = backgroundColor;
+    }
+
+    @Override
+    public void reset() {
+        glyph = ' ';
+        foregroundColor = null;
+        backgroundColor = null;
     }
 
     @Override

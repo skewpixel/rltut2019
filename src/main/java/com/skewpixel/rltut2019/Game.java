@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,9 +62,6 @@ public class Game implements Runnable {
         logger.info("Creating game window");
         terminal = new Terminal(TerminalFont.DefaultFont, ScreenCols, ScreenRows);
 
-        // create our global game state
-        GlobalState.initialise();
-
         // temporary component to hold fps values
         this.fpsComponent = new FpsComponent();
 
@@ -103,6 +99,9 @@ public class Game implements Runnable {
         renderer.addRenderer("FpsRenderer", new TextRenderer(19, 0, () -> String.format("FPS: %d, TPS: %d", fpsComponent.fps, fpsComponent.tps)));
         renderer.addRenderer("TestTextRenderer", new TextRenderer(0, 0, "rltut2020 v0.0.1 - "));
 
+        // create our global game state
+        GlobalState.initialise(world, fovCache, new ComponentFactory());
+
         //
         // Game Window
         ///
@@ -112,7 +111,8 @@ public class Game implements Runnable {
         // Player
         ///
         player = new Entity(new GlyphComponent('@', Color.red), new MovementComponent(), new PlayerComponent(),
-                            new BlocksMovementComponent(), new PositionComponent(world.getSpawnPoint().x, world.getSpawnPoint().y, 0));
+                            new BlocksMovementComponent(), new PositionComponent(world.getSpawnPoint().x, world.getSpawnPoint().y, 0),
+                            new HealthComponent(30), new AttackerComponent(5), new DefenderComponent(2));
 
         FovComponent fovComponent = new FovComponent(5);
         player.addComponent(fovComponent);
@@ -125,7 +125,8 @@ public class Game implements Runnable {
         gameSystems.add(new MovementGameSystem(world, eventService));
         gameSystems.add(new FieldOfViewSystem(world, fovCache, fovComponent.viewRadius, eventService));
         MobAIGameSystem aiSys = new MobAIGameSystem(eventService, entities);
-        aiSys.addAi(new BasicMobAi());
+        // for now just add the player directly into the basic mob ai
+        aiSys.addAi(new BasicMobAi(player));
         gameSystems.add(aiSys);
         CollisionActionSystem cas = new CollisionActionSystem(eventService);
         gameSystems.add(cas);

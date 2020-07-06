@@ -7,6 +7,15 @@ public class MovementComponent implements Component {
     public Integer newY;
     public Integer newLevel;
 
+    public MovementComponent() {}
+
+    @Override
+    public void reset() {
+        newX = null;
+        newY = null;
+        newLevel = null;
+    }
+
     @Override
     public String getName() {
         return Name;

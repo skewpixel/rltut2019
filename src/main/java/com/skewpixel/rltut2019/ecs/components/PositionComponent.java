@@ -8,6 +8,8 @@ public class PositionComponent implements Component {
     public int y;
     public int level;
 
+    public PositionComponent() {}
+
     public PositionComponent(int x, int y) {
         this(x, y, 0);
     }
@@ -16,6 +18,13 @@ public class PositionComponent implements Component {
         this.x = x;
         this.y = y;
         this.level = level;
+    }
+
+    @Override
+    public void reset() {
+        x = 0;
+        y = 0;
+        level = 0;
     }
 
     @Override
