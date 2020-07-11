@@ -2,6 +2,10 @@ package com.skewpixel.rltut2019.creatures.ai;
 
 import com.skewpixel.rltut2019.ecs.Entity;
 import com.skewpixel.rltut2019.ecs.components.*;
+import com.skewpixel.rltut2019.map.pathfinding.Path;
+import com.skewpixel.rltut2019.map.pathfinding.PathFinder;
+import com.skewpixel.rltut2019.map.Point;
+import com.skewpixel.rltut2019.map.pathfinding.PathFindingAlgorithm;
 import com.skewpixel.rltut2019.state.GlobalState;
 
 public class BasicMobAi implements MobAi {
@@ -30,6 +34,13 @@ public class BasicMobAi implements MobAi {
                 PositionComponent targetPos = tc.target.getComponentByName(PositionComponent.Name, PositionComponent.class);
 
                 if(targetPos != null) {
+                    PathComponent path = GlobalState.get().componentFactory.getComponentByName(PathComponent.Name, PathComponent.class);
+
+                    path.path = Path.findPath(new Point(pc.x, pc.y), new Point(targetPos.x, targetPos.y),
+                                                PathFindingAlgorithm.BreadthFirstEarlyExit,
+                                                GlobalState.get().world);
+                                                entity.addComponent(path);
+
                     if (GlobalState.get().fovCache.isInFov(pc.x, pc.y)) {
                         if (distanceTo(pc.x, pc.y, targetPos.x, targetPos.y) >= 2.0) {
                             entity.addComponent(moveTowards(pc.x, pc.y, targetPos.x, targetPos.y));

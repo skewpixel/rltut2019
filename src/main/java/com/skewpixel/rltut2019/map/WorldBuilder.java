@@ -1,7 +1,6 @@
 package com.skewpixel.rltut2019.map;
 
 import com.skewpixel.rltut2019.ecs.Entity;
-import com.skewpixel.rltut2019.ecs.components.NameComponent;
 import com.skewpixel.rltut2019.ecs.components.PositionComponent;
 
 import java.util.ArrayList;
@@ -15,6 +14,8 @@ public class WorldBuilder {
     private WorldDefinition worldDefinition;
     private CreatureGenerator mobGenerator;
     private Point spawnPoint;
+    private int maxMobSpawnCount = 1;
+    private int mobSpawnCount = 0;
 
     private WorldBuilder(WorldDefinition worldDefinition) {
         this.worldDefinition = worldDefinition;
@@ -111,35 +112,44 @@ public class WorldBuilder {
     }
 
     private void spawnCreatures(Rect room, List<Entity> entities) {
-        int numSpawns = randomInt(0, worldDefinition.maxRoomSpawns);
+        if(mobSpawnCount < maxMobSpawnCount) {
+            mobSpawnCount++;
 
-        int orcSpawnCount = 0;
-        int trollSpawnCount = 0;
-        for(int i = 0; i < numSpawns; i++) {
             int x = randomInt(room.p1.x + 1, room.p2.x - 1);
             int y = randomInt(room.p1.y + 1, room.p2.y - 1);
-
-            switch (randomInt(0, 2)) {
-                case 0:
-                    if(orcSpawnCount < worldDefinition.maxOrcs) {
-                        Entity orc = mobGenerator.spawnOrc();
-                        orc.addComponent(new PositionComponent(x, y, 0));
-                        entities.add(orc);
-                        orcSpawnCount++;
-                    }
-                    break;
-                case 1:
-                    if(trollSpawnCount < worldDefinition.maxTrolls) {
-                        Entity troll = mobGenerator.spawnTroll();
-                        troll.addComponent(new PositionComponent(x, y, 0));
-                        entities.add(troll);
-                        trollSpawnCount++;
-                    }
-                    break;
-                case 2:
-                    break;
-            }
+            Entity orc = mobGenerator.spawnOrc();
+            orc.addComponent(new PositionComponent(x, y, 0));
+            entities.add(orc);
         }
+//        int numSpawns = randomInt(0, worldDefinition.maxRoomSpawns);
+//
+//        int orcSpawnCount = 0;
+//        int trollSpawnCount = 0;
+//        for(int i = 0; i < numSpawns; i++) {
+//            int x = randomInt(room.p1.x + 1, room.p2.x - 1);
+//            int y = randomInt(room.p1.y + 1, room.p2.y - 1);
+//
+//            switch (randomInt(0, 2)) {
+//                case 0:
+//                    if(orcSpawnCount < worldDefinition.maxOrcs) {
+//                        Entity orc = mobGenerator.spawnOrc();
+//                        orc.addComponent(new PositionComponent(x, y, 0));
+//                        entities.add(orc);
+//                        orcSpawnCount++;
+//                    }
+//                    break;
+//                case 1:
+//                    if(trollSpawnCount < worldDefinition.maxTrolls) {
+//                        Entity troll = mobGenerator.spawnTroll();
+//                        troll.addComponent(new PositionComponent(x, y, 0));
+//                        entities.add(troll);
+//                        trollSpawnCount++;
+//                    }
+//                    break;
+//                case 2:
+//                    break;
+//            }
+//        }
     }
 
     private void createRoom(Rect room) {

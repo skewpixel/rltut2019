@@ -1,9 +1,6 @@
 package com.skewpixel.rltut2019.screens;
 
-import com.skewpixel.rltut2019.renderer.TextRenderer;
-import com.skewpixel.rltut2019.renderer.GameRenderer;
-import com.skewpixel.rltut2019.renderer.GlyphEntityRenderer;
-import com.skewpixel.rltut2019.renderer.MapRenderer;
+import com.skewpixel.rltut2019.renderer.*;
 import com.skewpixel.rltut2019.ui.Terminal;
 
 public class PlayScreen implements Screen {
@@ -13,6 +10,7 @@ public class PlayScreen implements Screen {
     private final GlyphEntityRenderer entityRenderer;
     private final TextRenderer fpsRenderer;
     private final TextRenderer testTextRenderer;
+    private final PathRenderer pathRenderer;
 
 
     public PlayScreen(GameRenderer renderManager) {
@@ -20,6 +18,7 @@ public class PlayScreen implements Screen {
         this.entityRenderer = renderManager.getRendererByName(GlyphEntityRenderer.NAME, GlyphEntityRenderer.class);
         this.fpsRenderer = renderManager.getRendererByName("FpsRenderer", TextRenderer.class);
         this.testTextRenderer = renderManager.getRendererByName("TestTextRenderer", TextRenderer.class);
+        this.pathRenderer = renderManager.getRendererByName(PathRenderer.NAME, PathRenderer.class);
     }
 
     @Override
@@ -32,6 +31,8 @@ public class PlayScreen implements Screen {
         testTextRenderer.render(terminal);
         // finally render fps
         fpsRenderer.render(terminal);
+
+        pathRenderer.render(terminal);
     }
 
     public void update() {

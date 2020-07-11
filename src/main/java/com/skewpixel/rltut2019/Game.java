@@ -6,10 +6,7 @@ import com.skewpixel.rltut2019.ecs.Entity;
 import com.skewpixel.rltut2019.ecs.components.*;
 import com.skewpixel.rltut2019.ecs.systems.*;
 import com.skewpixel.rltut2019.map.*;
-import com.skewpixel.rltut2019.renderer.TextRenderer;
-import com.skewpixel.rltut2019.renderer.GameRenderer;
-import com.skewpixel.rltut2019.renderer.GlyphEntityRenderer;
-import com.skewpixel.rltut2019.renderer.MapRenderer;
+import com.skewpixel.rltut2019.renderer.*;
 import com.skewpixel.rltut2019.screens.PlayScreen;
 import com.skewpixel.rltut2019.screens.Screen;
 import com.skewpixel.rltut2019.services.EventService;
@@ -100,6 +97,7 @@ public class Game implements Runnable {
         fovCache = new FovCache(world.getWidth(), world.getHeight());
         renderer.addRenderer(MapRenderer.NAME, new MapRenderer(world, fovCache));
         renderer.addRenderer(GlyphEntityRenderer.NAME, new GlyphEntityRenderer(entities, fovCache));
+        renderer.addRenderer(PathRenderer.NAME, new PathRenderer(entities));
         renderer.addRenderer("FpsRenderer", new TextRenderer(19, 0, () -> String.format("FPS: %d, TPS: %d", fpsComponent.fps, fpsComponent.tps)));
         renderer.addRenderer("TestTextRenderer", new TextRenderer(0, 0, "rltut2020 v0.0.1 - "));
 
