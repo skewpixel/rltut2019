@@ -4,5 +4,6 @@ public enum PathFindingAlgorithm {
     BreadthFirst,
     BreadthFirstEarlyExit,
     Dijkstra,
-    GreadyBestFirst
+    GreadyBestFirst,
+    aStar
 }

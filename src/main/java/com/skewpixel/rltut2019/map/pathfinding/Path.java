@@ -24,6 +24,8 @@ public class Path {
                 return new Path(pf.dijkstraSearch(start, end));
             case GreadyBestFirst:
                 return new Path(pf.greadyBestFirstSearch(start, end));
+            case aStar:
+                return new Path(pf.aStarSearch(start, end));
         }
 
         throw new RuntimeException("Invalid PathFindingAlgorithm provided. Unable to compute path");

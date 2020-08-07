@@ -128,6 +128,49 @@ public class PathFinder {
         return points;
     }
 
+    public List<Point> aStarSearch(Point start, Point end) {
+        PointWithCost start_with_cost = new PointWithCost(start, 0);
+
+        PriorityQueue<PointWithCost> frontier = new PriorityQueue<>();
+        Map<Point, Point> came_from = new HashMap<>();
+        Map<Point, Integer> cost_so_far = new HashMap<>();
+
+        frontier.add(start_with_cost);
+        came_from.put(start_with_cost.point, null);
+        cost_so_far.put(start_with_cost.point, start_with_cost.cost);
+
+        while(!frontier.isEmpty()) {
+            PointWithCost currentWithCost = frontier.remove();
+
+            if(currentWithCost.point.equals(end)) {
+                break;
+            }
+
+            for(Point nextPt : getPointNeighbors(currentWithCost.point, end)) {
+                int new_cost = cost_so_far.get(currentWithCost.point) + getCostForPoints(currentWithCost.point, nextPt);//cost to go to next from current
+
+                if(!cost_so_far.containsKey(nextPt) ||
+                        (new_cost < cost_so_far.get(nextPt))) {
+                    int priority = new_cost + calculateManhattenPriority(end, nextPt);
+                    cost_so_far.put(nextPt, new_cost);
+                    frontier.add(new PointWithCost(nextPt, priority));
+                    came_from.put(nextPt, currentWithCost.point);
+                }
+            }
+        }
+
+        List<Point> points = new ArrayList<>();
+
+        Point current = end;
+        while(current != start) {
+            points.add(current);
+            current = came_from.get(current);
+        }
+        Collections.reverse(points);
+
+        return points;
+    }
+
     private int calculateManhattenPriority(Point a, Point b) {
         return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
     }
