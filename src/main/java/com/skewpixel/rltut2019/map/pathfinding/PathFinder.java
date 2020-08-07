@@ -48,7 +48,7 @@ public class PathFinder {
         return points;
     }
 
-    public List<Point> DijkstraSearch(Point start, Point end) {
+    public List<Point> dijkstraSearch(Point start, Point end) {
         PointWithCost start_with_cost = new PointWithCost(start, 0);
 
         PriorityQueue<PointWithCost> frontier = new PriorityQueue<>();
@@ -88,6 +88,48 @@ public class PathFinder {
         Collections.reverse(points);
 
         return points;
+    }
+
+    public List<Point> greadyBestFirstSearch(Point start, Point end) {
+        PointWithCost start_with_cost = new PointWithCost(start, 0);
+
+        PriorityQueue<PointWithCost> frontier = new PriorityQueue<>();
+        Map<Point, Point> came_from = new HashMap<>();
+
+        frontier.add(start_with_cost);
+        came_from.put(start_with_cost.point, null);
+
+        while(!frontier.isEmpty()) {
+            PointWithCost currentWithCost = frontier.remove();
+
+            if(currentWithCost.point.equals(end)) {
+                break;
+            }
+
+            for(Point nextPt : getPointNeighbors(currentWithCost.point, end)) {
+                int priority = calculateManhattenPriority(end, nextPt);
+
+                if(!came_from.containsKey(nextPt)) {
+                    frontier.add(new PointWithCost(nextPt, priority));
+                    came_from.put(nextPt, currentWithCost.point);
+                }
+            }
+        }
+
+        List<Point> points = new ArrayList<>();
+
+        Point current = end;
+        while(current != start) {
+            points.add(current);
+            current = came_from.get(current);
+        }
+        Collections.reverse(points);
+
+        return points;
+    }
+
+    private int calculateManhattenPriority(Point a, Point b) {
+        return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
     }
 
     private int getCostForPoints(Point from, Point to) {
