@@ -29,8 +29,8 @@ public class PathFinder {
                 break;
             }
 
-            for(Point pt : getPointNeighbors(current)) {
-                if(!came_from.containsKey(pt) && (world.isEmptyLocation(pt.x, pt.y, 0) || pt.equals(end))){
+            for(Point pt : getPointNeighbors(current, end)) {
+                if(!came_from.containsKey(pt)) {// && (world.isEmptyLocation(pt.x, pt.y, 0) || pt.equals(end))){
                     frontier.add(pt);
                     came_from.put(pt, current);
                 }
@@ -48,7 +48,58 @@ public class PathFinder {
         return points;
     }
 
-    public List<Point> getPointNeighbors(Point pt) {
+    public List<Point> DijkstraSearch(Point start, Point end) {
+        PointWithCost start_with_cost = new PointWithCost(start, 0);
+
+        PriorityQueue<PointWithCost> frontier = new PriorityQueue<>();
+        Map<Point, Point> came_from = new HashMap<>();
+        Map<Point, Integer> cost_so_far = new HashMap<>();
+
+        frontier.add(start_with_cost);
+        came_from.put(start_with_cost.point, null);
+        cost_so_far.put(start_with_cost.point, start_with_cost.cost);
+
+        while(!frontier.isEmpty()) {
+            PointWithCost currentWithCost = frontier.remove();
+
+            if(currentWithCost.point.equals(end)) {
+                break;
+            }
+
+            for(Point nextPt : getPointNeighbors(currentWithCost.point, end)) {
+                int new_cost = cost_so_far.get(currentWithCost.point) + getCostForPoints(currentWithCost.point, nextPt);//cost to go to next from current
+
+                if(!cost_so_far.containsKey(nextPt) ||
+                        (new_cost < cost_so_far.get(nextPt))) {
+                    cost_so_far.put(nextPt, new_cost);
+                    frontier.add(new PointWithCost(nextPt, new_cost));
+                    came_from.put(nextPt, currentWithCost.point);
+                }
+            }
+        }
+
+        List<Point> points = new ArrayList<>();
+
+        Point current = end;
+        while(current != start) {
+            points.add(current);
+            current = came_from.get(current);
+        }
+        Collections.reverse(points);
+
+        return points;
+    }
+
+    private int getCostForPoints(Point from, Point to) {
+
+        if((from.x == to.x) || (from.y == to.y)) {
+            return 0;
+        }
+
+        return 1;
+    }
+
+    public List<Point> getPointNeighbors(Point pt, Point end) {
         List<Point> points = new ArrayList<>();
 
         for(int ox = -1; ox < 2; ox++ ) {
@@ -62,7 +113,9 @@ public class PathFinder {
 
                 if((x >= 0) && (x < world.getWidth()) &&
                         (y >= 0) && (y < world.getHeight())) {
-                    points.add(new Point(x, y));
+                    if(world.isEmptyLocation(x, y, 0) || ((end.x == x) && (end.y == y))) {
+                        points.add(new Point(x, y));
+                    }
                 }
             }
         }

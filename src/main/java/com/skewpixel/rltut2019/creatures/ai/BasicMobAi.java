@@ -37,7 +37,7 @@ public class BasicMobAi implements MobAi {
                     PathComponent path = GlobalState.get().componentFactory.getComponentByName(PathComponent.Name, PathComponent.class);
 
                     path.path = Path.findPath(new Point(pc.x, pc.y), new Point(targetPos.x, targetPos.y),
-                                                PathFindingAlgorithm.BreadthFirstEarlyExit,
+                                                PathFindingAlgorithm.Dijkstra,
                                                 GlobalState.get().world);
                                                 entity.addComponent(path);
 

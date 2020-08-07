@@ -20,6 +20,8 @@ public class Path {
             case BreadthFirst:
             case BreadthFirstEarlyExit:
                 return new Path(pf.breadthFirstSearch(start, end, searchType == PathFindingAlgorithm.BreadthFirstEarlyExit));
+            case Dijkstra:
+                return new Path(pf.DijkstraSearch(start, end));
         }
 
         throw new RuntimeException("Invalid PathFindingAlgorithm provided. Unable to compute path");
