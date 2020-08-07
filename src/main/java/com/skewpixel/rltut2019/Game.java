@@ -81,7 +81,7 @@ public class Game implements Runnable {
         //
         // Game world
         ///
-        world = WorldBuilder.buildWorld(new WorldDefinition(WorldWidth, WorldHeight, 10, 6, 15, 8, 3, 2), entities);
+        world = WorldBuilder.buildWorld(new WorldDefinition(WorldWidth, WorldHeight, 10, 6, 15, 5, 3, 2), entities);
 
         //
         // Events service
