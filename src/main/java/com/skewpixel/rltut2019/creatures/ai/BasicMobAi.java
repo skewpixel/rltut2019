@@ -36,24 +36,6 @@ public class BasicMobAi implements MobAi {
                 PositionComponent targetPos = tc.target.getComponentByName(PositionComponent.Name, PositionComponent.class);
 
                 if(targetPos != null) {
-                    PathComponent pathComponent = GlobalState.get().componentFactory.getComponentByName(PathComponent.Name, PathComponent.class);
-
-                    pathComponent.reset();
-
-                    pathComponent.addPath(Path.findPath(new Point(pc.x, pc.y), new Point(targetPos.x, targetPos.y),
-                                                PathFindingAlgorithm.BreadthFirstEarlyExit,
-                                                GlobalState.get().world), Color.yellow);
-
-                    pathComponent.addPath(Path.findPath(new Point(pc.x, pc.y), new Point(targetPos.x, targetPos.y),
-                            PathFindingAlgorithm.Dijkstra,
-                            GlobalState.get().world), Color.cyan);
-
-                    pathComponent.addPath(Path.findPath(new Point(pc.x, pc.y), new Point(targetPos.x, targetPos.y),
-                            PathFindingAlgorithm.aStar,
-                            GlobalState.get().world), Color.magenta);
-
-                    entity.addComponent(pathComponent);
-
                     if (GlobalState.get().fovCache.isInFov(pc.x, pc.y)) {
                         if (distanceTo(pc.x, pc.y, targetPos.x, targetPos.y) >= 2.0) {
                             entity.addComponent(moveTowards(pc.x, pc.y, targetPos.x, targetPos.y));
